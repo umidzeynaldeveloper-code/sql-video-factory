@@ -14,8 +14,12 @@ T_ORIG = {
     14: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     15: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     16: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    17: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    18: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    19: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    20: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -191,5 +195,53 @@ N = {
  "Your toolbox. Check V dollar S Q L: is the cursor bind sensitive, is it bind aware, and how many children does it have? Use S Q L plan baselines to lock in a proven good plan, so a bad peek can't take over. And think about your data: for a column with only a handful of very skewed values, sometimes a literal is the honest choice.",
  "Remember: with bind peeking, the first value decides. The cached plan is reused for everyone. With skewed data, some values suffer. Adaptive cursor sharing creates a child cursor per range. And baselines lock in a good plan.",
  "Next video: S Q L plan baselines. Freeze a good plan forever. " + FOLLOW,
+],
+17: [
+ "Friday, your end of day query runs in two seconds. Over the weekend, statistics are refreshed, or the database is upgraded. Monday: forty minutes. The plan flipped. What if Oracle could only use plans you've approved?",
+ "That's S Q L plan management. It adds a gatekeeper between the optimizer and execution. For each S Q L statement, Oracle keeps a baseline: the set of accepted plans. The optimizer can still build a plan, but it may only run a plan that's in the baseline.",
+ "So how do plans get in? The common way: load the plan that runs well today, straight from the cursor cache, with D B M S S P M. Or let Oracle capture baselines automatically for statements that run repeatedly. The first plan that enters the baseline is accepted. That's your known good plan.",
+ "Now the statistics change, and the optimizer prefers a new plan, plan B. But plan B isn't accepted. It's stored in the plan history for later, and it is not executed. Oracle runs the accepted plan A instead. Your end of day still runs in two seconds.",
+ "But what if plan B is actually better? That's what evolution is for. Oracle test drives the new plan and the baseline plan, and compares their real performance. Only if the new plan is clearly faster does it become accepted. Since Oracle twelve c, an automatic evolve task does this every night in the maintenance window.",
+ "To see it working, query D B A S Q L plan baselines: each plan shows whether it's enabled, accepted, and fixed. The execution plan's note section tells you when a baseline was used. And mark a plan as fixed when you never want anything else for that statement.",
+ "Here's a bank playbook for upgrades. Before the upgrade, capture baselines for your critical end of day statements. Upgrade, patch, or refresh statistics. Oracle keeps using the same accepted plans, so there are no surprises. Then let evolution accept only plans that prove they're faster.",
+ "One trap: a baseline stores how to build a plan, not the result itself. If you drop an index that plan A depends on, Oracle can't reproduce it, and the optimizer quietly falls back to its own new plan. So keep the objects your baselines depend on, and recheck them after schema changes.",
+ "Remember: a baseline is a set of accepted plans. A new plan goes to the history, not to execution. Evolution accepts it only if it's faster. Fixed pins one plan. And before upgrades, capture your critical S Q L.",
+ "Next video: redo and commit. Why commit is so fast. " + FOLLOW,
+],
+18: [
+ "Updating a million rows takes thirty seconds. But the commit? A hundredth of a second. Why is commit so fast, and how does a power cut lose nothing? The answer is redo.",
+ "When you update a row, Oracle changes the block in the buffer cache, in memory. Nothing is written to the table on disk yet. The old value is saved in undo, for rollback and for other readers. And a tiny redo record, describing the change, goes into the redo log buffer.",
+ "Undo versus redo. Two journals, opposite directions. Undo stores the old value, so Oracle can go back: rollback, and consistent reads. Redo stores the change itself, so Oracle can go forward and replay it after a crash. Undo lives in the undo tablespace, redo in the redo log files. Fun fact: even writing undo generates redo, so undo survives a crash too.",
+ "Now you commit. The log writer, L G W R, writes the redo buffer to the online redo log on disk. It's a small, sequential write, and as soon as it's on disk, your commit returns. The changed table block is still only in memory. And that's perfectly safe.",
+ "The dirty data blocks are written later, by the database writer, D B W R. It writes in big batches at checkpoints, completely independent of your commit. Fast sequential redo on commit, slow random datafile writes in the background. That's the trick.",
+ "Now, the power goes out. Everything in memory is gone. On restart, Oracle rolls forward: it replays the redo log and re-applies every change since the last checkpoint. Then it rolls back anything that was never committed, using undo. Nothing committed is lost.",
+ "Redo logs work in a circle. There are several online log groups. L G W R fills one, then switches to the next, and eventually overwrites the oldest. In archive log mode, each full log is copied away first. That's the foundation of your backups, point in time recovery, and Data Guard.",
+ "So how often should you commit? Every commit waits for a disk write, the log file sync wait. Commit every row, and you wait a million times. But never committing a huge batch is bad too: undo grows and locks are held for hours. Commit at the end of a logical unit of work, or in sensible batches.",
+ "Remember: an update changes memory. Undo keeps the old value, redo keeps the change. Commit means L G W R writes redo. After a crash, Oracle replays redo, then undoes the rest. Write the journal first, the data later.",
+ "Next video: result cache. Answers straight from memory. " + FOLLOW,
+],
+19: [
+ "The same query runs ten thousand times a minute. Every time, Oracle reads the blocks and computes the answer again. Fifty milliseconds, over and over. What if Oracle just remembered the answer? That's the result cache.",
+ "The buffer cache keeps data blocks. A query still has to read them, join, sort, and compute. The result cache, in the shared pool, keeps the finished result of a query or a function. Same query, same binds, same data? Oracle simply returns the stored answer.",
+ "There are three ways to switch it on. The simplest: add the result cache hint to one query. Or annotate a table, so every query on it uses the cache automatically. Or mark a P L S Q L function with result cache. We'll see that one in a moment.",
+ "The first execution finds nothing in the cache, so Oracle runs the query normally, and then stores the result. Every next execution with the same binds is a hit. No block reads, no execution. The answer comes straight from memory.",
+ "Now someone updates the rate and commits. Oracle tracks which tables every cached result depends on, so it marks that result invalid. The next query recomputes it once, and caches the new answer. You never read a stale result.",
+ "Mark a P L S Q L function as result cache, and Oracle caches its return value for each set of arguments. Call get rate for U S D a million times from a big query, and it really runs once per currency. And the cache is shared across all sessions, not just yours.",
+ "So what belongs in the cache? Small, read-mostly lookups: exchange rates, branches, product codes, and summaries over stable data. What doesn't? Hot tables like transactions and balances, where every commit invalidates the cache. Huge results waste memory, and queries that never repeat never hit.",
+ "Is it working? V dollar result cache objects shows each cached result, its status, and how often it was reused. A high scan count is great. Constantly invalid means that table doesn't belong there. Also check the statistics view, the memory report, and size the cache with result cache max size.",
+ "Remember: the result cache stores final answers. The first run computes and stores, the next runs hit memory. A commit invalidates dependent results automatically. And it's best for small, read-mostly data.",
+ "Next video: fragmentation and shrink. Why delete doesn't make a table smaller. " + FOLLOW,
+],
+20: [
+ "You delete ninety percent of the rows in a ten gigabyte table. The table is still ten gigabytes, and the full scan takes exactly as long. Why? Meet the high water mark.",
+ "A table segment is a set of blocks. Inserts fill them, one after another. The high water mark marks the highest block that was ever used. And a full table scan reads every single block below it. Remember that.",
+ "Delete removes rows. The blocks become empty, but they still belong to the table, and the high water mark doesn't move. So a full scan still reads all those empty blocks. The same I O, for a fraction of the data.",
+ "Truncate is different. It removes all rows at once and resets the high water mark to the start. Delete works row by row, with undo and redo for every row, and it can be rolled back. Truncate is D D L: fast, minimal undo, no rollback. Perfect for staging tables, but not when you need to keep some rows.",
+ "To fix a table you want to keep, use shrink space. First enable row movement. Oracle moves rows from the end of the segment into free space at the start. Then it lowers the high water mark and releases the empty blocks, online, while users keep working. It needs automatic segment space management, and rowids change.",
+ "Another option is alter table move. It copies the table into a brand new, packed segment, and drops the old one. Careful: rowids change, so a plain move leaves indexes unusable. Use the online option, or update indexes. And you need free space for a full copy. Afterwards, gather fresh statistics.",
+ "The best fix is not to fragment at all. In banking, old transactions are purged every month. With delete, that leaves holes everywhere. Partition by date instead, and drop or truncate the old partition. It's instant, with no row by row undo and redo. And indexes? Only shrink or rebuild them when you have real evidence.",
+ "How do you spot it? Compare the allocated size in D B A segments with the real data: rows times average row length. D B M S space shows how full the blocks are, and the segment advisor recommends what to shrink. A big gap plus slow full scans means a shrink candidate.",
+ "Remember: delete removes rows, but the high water mark stays. Truncate resets it. Shrink space compacts online. Move rebuilds the segment, so check your indexes. And with partitions, drop, don't delete.",
+ "Next video: A W R in three minutes. How to read your database's health report. " + FOLLOW,
 ],
 }

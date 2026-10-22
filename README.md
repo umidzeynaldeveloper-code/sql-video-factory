@@ -2,6 +2,7 @@
 
 Renders the vertical (1080x1920) explainer videos for @sql_developer_no1 / @UmidZeynalDeveloper.
 
+- `vhelp.py` — shared scene helpers for videos 17+ (base frame, recap, CTA, card lists, preview sheet)
 - `make_videoN.py` — scene-by-scene frame renderer for video N (schematic style from 11+)
 - `en/narration.py` — English narration per scene + original scene timings
 - `en/build.py N full` — TTS (Kokoro via sherpa-onnx), scene retiming, music, ducking, loudnorm → `en/sql_videoN_EN_<slug>.mp4`
@@ -10,10 +11,14 @@ Renders the vertical (1080x1920) explainer videos for @sql_developer_no1 / @Umid
 Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool pulls them from raw.githubusercontent.com.
 
 ## Published / planned topics
-1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking
+1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking · 17 SQL plan baselines · 18 redo & COMMIT (incl. UNDO vs REDO) · 19 result cache · 20 fragmentation & SHRINK
 
 ## Next topics
-17 SQL plan baselines · 18 result cache · 19 table/index fragmentation & shrink · 20 redo & commit internals · 21 latches & mutexes · 22 AWR in 3 minutes
+21 AWR in 3 minutes · 22 latches & mutexes
+
+Owner's backlog requests:
+- UNDO vs REDO deep-dive: essence and working mechanism of undo vs redo log files
+- Data files vs log files: how Oracle stores and logs data in the background, schematic with graphs
 
 ## Publishing rules (YouTube via Metricool)
 - YouTube title = the short "Caption your Short" line (≤100 chars, ends with `#sql #oracle #shorts`).
