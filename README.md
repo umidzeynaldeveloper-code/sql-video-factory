@@ -14,3 +14,8 @@ Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool 
 
 ## Next topics
 17 SQL plan baselines · 18 result cache · 19 table/index fragmentation & shrink · 20 redo & commit internals · 21 latches & mutexes · 22 AWR in 3 minutes
+
+## Publishing rules (YouTube via Metricool)
+- YouTube title = the short "Caption your Short" line (≤100 chars, ends with `#sql #oracle #shorts`).
+- Description = `"<video number>. "` + the full detailed description (e.g. `16. The same SQL is fast...`).
+- Post videos in numerical order; privacy as requested by the owner; madeForKids=false; isAiGeneratedContent=true; category EDUCATION.
