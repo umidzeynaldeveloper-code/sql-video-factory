@@ -21,8 +21,11 @@ T_ORIG = {
     21: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     22: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     23: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    24: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    25: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    26: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -282,5 +285,41 @@ N = {
  "You can see it all yourself. D B A data files lists the datafiles. V dollar log and log file show the redo groups. V dollar control file shows the copies. Watch your space: a full datafile stops inserts, and a full archive destination stops the whole database.",
  "Remember: datafiles hold blocks, written randomly by D B W N. Redo logs are the journal, written sequentially by L G W R. Checkpoints let the datafiles catch up. The control file is the map, so multiplex it. And never let the archive destination fill up.",
  "Next video: latches and mutexes. Tiny locks, huge waits. " + FOLLOW,
+],
+24: [
+ "The CPU is at one hundred percent, but almost nothing useful gets done. The top wait event says latch, cache buffers chains. Sessions are spinning on tiny memory locks: latches and mutexes. Let's open them up.",
+ "The SGA is shared memory. Hundreds of sessions read and change the same lists and hash chains. If two processes change the same pointer at the same instant, the structure is corrupted. So Oracle guards each structure with a tiny lock that lives in memory: a latch, or a mutex. One at a time.",
+ "Don't confuse latches with locks. Latches and mutexes protect memory structures, and are held for microseconds. Locks, or enqueues, protect your rows and tables, and are held until you commit. Lock waiters line up in a fair queue. Latch waiters have no queue at all.",
+ "So what happens when a latch is busy? The session doesn't queue. It spins on the CPU, checking again and again. Spinning is cheap if the holder releases in microseconds. If not, the session goes to sleep and retries later. That's why a hot latch shows up twice: as burned CPU, and as wait time.",
+ "The most famous one is cache buffers chains. The buffer cache is a hash table. Each bucket has a chain of buffers, guarded by a latch. When everyone hammers the same hot block, like one index root or one popular row, they all need the same latch. The real cause is usually SQL doing millions of logical reads.",
+ "Cursors in the library cache are protected by mutexes. A mutex lives inside each object, so contention is spread out. But one extremely hot cursor still serializes everyone. Cursor pin S waits mean thousands of executions per second of the same cursor. Library cache mutex X points to parsing and invalidations.",
+ "Remember, latch waits are symptoms. Cache buffers chains? Find the SQL with the most logical reads and tune it. Shared pool and library cache contention? Stop hard parsing, use bind variables. Cursor pin S? Call the same cursor less often. And investigate high version counts.",
+ "To diagnose, start with V dollar latch: gets, misses, and sleeps. A high miss ratio means contention. V dollar mutex sleep shows mutex hot spots. Then use ASH to connect the wait event to the SQL I D. The latch is never the culprit. The SQL is.",
+ "Remember: latches guard memory for microseconds. Waiters spin on the CPU, then sleep. Cache buffers chains means a hot block, so tune the SQL. Mutexes guard cursors. And always fix the SQL, not the latch.",
+ "Next video: locks and enqueues. Who is blocking me? " + FOLLOW,
+],
+25: [
+ "You run a simple update on one account, and it just waits. One minute, two minutes. The wait event says enqueue T X, row lock contention. Your session isn't slow. It's standing in a queue. Who is blocking you?",
+ "When you update a row, Oracle doesn't keep a big central list of row locks. It marks the row itself. The row points to a slot in the block's interested transaction list, the I T L, which names your transaction. That's why Oracle can lock millions of rows for free. Anyone who wants that row waits on your transaction.",
+ "Watch it step by step. Session one updates account seven, and doesn't commit yet. Sessions two, three and four want the same row. They line up in a fair queue: first in, first out. When session one commits or rolls back, session two gets the row, and session three now waits for session two.",
+ "Every insert, update and delete also takes a T M lock on the whole table, in row exclusive mode. These are compatible with each other, so thousands of D M L sessions work in parallel. But D D L, like alter table, needs an exclusive lock. While any transaction is open on the table, it waits, or fails with O R A fifty four, resource busy.",
+ "Here's a classic trap. Accounts has a foreign key to customers, but the foreign key column has no index. Delete a customer, and Oracle must lock the whole accounts table while it checks the children. Suddenly, inserts and updates on accounts stall. The fix is one line: index your foreign key columns.",
+ "Sometimes you lock rows on purpose. Select for update locks the rows you read, before you change them. Add skip locked, and each worker grabs only rows nobody else holds. Three workers process the payment queue in parallel, and nobody waits. Use no wait to fail immediately, or wait with a number of seconds.",
+ "Blocking forms a tree. The root is often a session that is idle in a transaction: someone forgot to commit. V dollar session shows who waits, on which event, and which session blocks it. Fix the root, usually by asking the owner to commit. Kill a session only as a last resort, and remember that its rollback takes time too.",
+ "So, four rules for developers. Keep transactions short. Never hold locks while waiting for a user. Index your foreign keys. And always lock rows in the same order, or two sessions can block each other forever: a deadlock.",
+ "Remember: row locks live in the block, through the I T L and the T X enqueue. Waiters form a fair queue. T M locks protect tables from D D L. Index foreign keys. And skip locked lets workers share a queue.",
+ "Next video: the shared pool and hard parsing. Why literals kill your C P U. " + FOLLOW,
+],
+26: [
+ "The same query, ten thousand times, each with a different literal value. The C P U climbs to ninety five percent, and most of the time goes into hard parsing. Oracle builds a new plan for every single one. Let's see what happens inside the shared pool.",
+ "The shared pool is part of the S G A. Its heart is the library cache, which holds parsed S Q L cursors and P L S Q L code, shared by every session. The dictionary cache keeps metadata about tables, columns and privileges. And the result cache from video nineteen lives here too.",
+ "Every S Q L goes through parsing. First a syntax check, then a semantic check: do the tables exist, do you have the privileges. Then Oracle hashes the exact S Q L text and looks it up in the library cache. Found? That's a soft parse: reuse the plan. Not found is a hard parse: optimize, allocate shared memory under latches, and load the new cursor. Very expensive.",
+ "With literals, every value makes a different text, a different hash, and a brand new cursor. Ten thousand values, ten thousand hard parses. With a bind variable, the text never changes: one cursor, parsed once, executed ten thousand times. Good news: static S Q L in P L S Q L binds automatically. The danger is dynamic S Q L built by concatenation.",
+ "There are three levels. A hard parse costs milliseconds of C P U and grabs shared pool latches. A soft parse is much cheaper, but still a lookup. Best of all is no parse: the session keeps the cursor open and simply executes it again. P L S Q L does this for you. Parse once, execute many.",
+ "Literal S Q L also damages memory. Thousands of single use cursors fill the shared pool and keep getting replaced. Memory becomes fragmented. There's free space, but only in tiny pieces, and a large allocation fails with O R A four zero three one. A bigger pool only delays it. The real fix is sharable S Q L.",
+ "Even with the same text, one S Q L can have several child cursors: different bind types, a different optimizer setting, or adaptive cursor sharing. A few children are normal. Hundreds mean every execution searches a long list under a mutex. V dollar S Q L shared cursor tells you exactly why a child couldn't be shared.",
+ "To find the problem, check hard parses per second in the A W R load profile. Then group V dollar S Q L area by force matching signature: statements that differ only in literals share it, so a high count reveals the culprit. Cursor sharing force can replace literals automatically, but treat it as a band-aid. Fix the code.",
+ "Remember: the library cache shares cursors and P L S Q L. A hard parse means a new plan, new memory, and latches. Binds give one cursor for many executions. O R A four zero three one means a fragmented pool. And check why children aren't shared.",
+ "Next video: the buffer cache. How Oracle keeps hot blocks in memory. " + FOLLOW,
 ],
 }
