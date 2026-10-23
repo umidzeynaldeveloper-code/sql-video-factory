@@ -14,11 +14,12 @@ Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool 
 1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking · 17 SQL plan baselines · 18 redo & COMMIT (incl. UNDO vs REDO) · 19 result cache · 20 fragmentation & SHRINK
 
 ## Next topics
-21 AWR in 3 minutes · 22 latches & mutexes
+21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · next: 24 latches & mutexes
 
-Owner's backlog requests:
-- UNDO vs REDO deep-dive: essence and working mechanism of undo vs redo log files
-- Data files vs log files: how Oracle stores and logs data in the background, schematic with graphs
+Owner's backlog requests: (21–23 covered both)
+
+## Publishing rule
+Every YouTube upload: privacy=private, isAiGeneratedContent=true (YouTube AI disclosure), notifySubscribers=false, category EDUCATION. Number goes only in the description.
 
 ## Publishing rules (YouTube via Metricool)
 - YouTube title = the short "Caption your Short" line (≤100 chars, ends with `#sql #oracle #shorts`).
