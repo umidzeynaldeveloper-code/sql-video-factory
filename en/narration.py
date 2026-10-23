@@ -18,8 +18,11 @@ T_ORIG = {
     18: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     19: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     20: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    21: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    22: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    23: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -243,5 +246,41 @@ N = {
  "How do you spot it? Compare the allocated size in D B A segments with the real data: rows times average row length. D B M S space shows how full the blocks are, and the segment advisor recommends what to shrink. A big gap plus slow full scans means a shrink candidate.",
  "Remember: delete removes rows, but the high water mark stays. Truncate resets it. Shrink space compacts online. Move rebuilds the segment, so check your indexes. And with partitions, drop, don't delete.",
  "Next video: A W R in three minutes. How to read your database's health report. " + FOLLOW,
+],
+21: [
+ "Yesterday at two p m, the database was slow. Today everything is fine, and everyone asks: what happened? Good news: Oracle already recorded it. You just need to read the A W R report.",
+ "A background process, M MON, takes a snapshot of the database statistics every hour, and keeps them for eight days, in the SYSAUX tablespace. An A W R report is simply the difference between two snapshots: what happened between them. One note: A W R needs the Diagnostics Pack license.",
+ "To get the report, run A W R R P T dot S Q L from S Q L Plus, and choose H T M L. Pick the snapshots around the problem: begin at two o'clock, end at three. Keep the window short, because a whole day hides a one hour spike in the average.",
+ "Step one: D B time. Elapsed time is sixty minutes, but D B time is four hundred eighty. D B time is the time sessions spent working or waiting in the database. Divide by elapsed, and you get eight active sessions on average, on a machine with four C P Us. A busy database. Now, busy doing what?",
+ "Step two: the top ten foreground events. This is where the time went. Here, D B file sequential read takes almost half of D B time. That's the bottleneck. Always attack the biggest bar first, because tuning a five percent event saves five percent at best.",
+ "Step three: S Q L ordered by elapsed time. Who spent that time? Very often, one statement dominates. Here, the end of day balance calculation takes sixty two percent of the hour. Take its S Q L I D, and pull its plan straight from A W R.",
+ "Learn the common events. Sequential read means single block reads, usually index lookups. Scattered read means full scans. Log file sync means sessions are waiting on commit, often from committing every row. Row lock enqueue means sessions are blocking each other. And high D B C P U means heavy logic, or too many logical reads.",
+ "The same data powers more tools. The compare report puts a good hour next to a bad hour. A D D M reads the snapshots and writes findings for you. And for a two minute spike, use A S H, which samples active sessions every second. No license? Statspack is the free alternative.",
+ "Remember: snapshots every hour, and the report is the difference. D B time divided by elapsed shows the load. Top events show where the time went. Top S Q L shows who spent it. Read it in that order.",
+ "Next video: undo versus redo, the deep dive. " + FOLLOW,
+],
+22: [
+ "Oracle keeps two journals that go in opposite directions. Undo remembers how things were, so Oracle can go back. Redo remembers what changed, so Oracle can go forward. Last time we saw them side by side. Today: how each one really works inside.",
+ "Take one update: balance from one thousand to five hundred. First, Oracle writes an undo record with the old value. Writing undo is itself a change, so it generates redo. Then the data change gets its own redo. Only then is the block changed in the buffer cache. Redo protects both the data and the undo.",
+ "A redo record is stamped with an S C N, the database's clock. Inside are change vectors. Each one describes a single block change: one for the undo block, one for the data block. There's no S Q L in redo. It's physical: which block, and which bytes. That's why replay is fast and exact.",
+ "Undo lives in undo segments, in the undo tablespace, and each segment is a ring of extents. Active undo belongs to uncommitted transactions, and is never overwritten. Unexpired undo is committed, but kept for readers. Expired undo is free. As transactions run, the ring moves forward and reuses expired extents.",
+ "Undo has a second job: consistent reads. A query that starts at S C N one hundred must see the data as of one hundred. When it reaches a block that changed at one hundred five, Oracle clones the block and applies undo to roll the copy back. No locks, no waiting. Readers never block writers.",
+ "Now the famous error: O R A fifteen fifty five, snapshot too old. A report runs for two hours, but undo is only kept for fifteen minutes. Other transactions reuse that undo, and the report can't rebuild its old block. The fix: size undo and undo retention for your longest query, and never commit inside the loop you are fetching from.",
+ "On the redo side, logs live in groups. Each group should have at least two members, on different disks. If the logs are too small, Oracle switches constantly and forces checkpoints. Aim for a few switches per hour. If you see checkpoint not complete in your waits, your logs are too small.",
+ "So who needs what? Undo serves rollback, consistent reads, and flashback query. After a crash, both work together: redo rolls forward, then undo rolls back uncommitted work. Redo plus archived logs restore a whole database and feed Data Guard. Lose your current redo, and committed work is gone.",
+ "Remember: undo is the old value, in a ring of extents. Redo is change vectors, ordered by S C N. Readers build consistent copies from undo. Snapshot too old means undo was overwritten. And redo protects undo too.",
+ "Next video: datafiles versus log files. What's on disk, and who writes it. " + FOLLOW,
+],
+23: [
+ "You run select star from accounts. But where do these rows actually live on disk? In two very different kinds of files: datafiles hold the data, log files hold the journal. Different files, different writers, and completely different I O.",
+ "A tablespace is a logical container, stored in one or more datafiles. Inside, every table and index is a segment, made of extents, which are contiguous chunks of space. And extents are made of blocks, usually eight kilobytes. The block is the unit Oracle reads and writes.",
+ "A database has several kinds of files. Datafiles hold tables, indexes, and undo. The control file is the map of the database. Online redo logs are the current journal, and archived logs are old copies. Temp files hold big sorts and hash joins, and the S P file holds the parameters.",
+ "Who writes what? The database writer, D B W N, writes dirty blocks from the buffer cache to the datafiles. The log writer, L G W R, writes the log buffer to the online redo logs. The checkpoint process records progress in the control file and in every datafile header. And A R C N copies full logs to the archive.",
+ "Now plot block address against time. D B W N jumps all over the datafiles: random I O, in big batches, in the background. L G W R only appends to the end of the log: small, sequential writes, and every commit waits for them. So put redo on fast, low latency storage, separate from the datafiles.",
+ "This graph shows dirty blocks piling up in memory. At each checkpoint, D B W N writes them, and the datafiles catch up with the redo. The checkpoint S C N is saved in the control file and datafile headers. So after a crash, Oracle only needs the redo after the last checkpoint.",
+ "The control file is small, but it's the map: the database name, every datafile, every redo log group, the current log sequence, the checkpoint S C N, and backup records. Without it, the database won't even mount. So always keep two or three copies, on different disks.",
+ "You can see it all yourself. D B A data files lists the datafiles. V dollar log and log file show the redo groups. V dollar control file shows the copies. Watch your space: a full datafile stops inserts, and a full archive destination stops the whole database.",
+ "Remember: datafiles hold blocks, written randomly by D B W N. Redo logs are the journal, written sequentially by L G W R. Checkpoints let the datafiles catch up. The control file is the map, so multiplex it. And never let the archive destination fill up.",
+ "Next video: latches and mutexes. Tiny locks, huge waits. " + FOLLOW,
 ],
 }
