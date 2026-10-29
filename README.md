@@ -55,6 +55,7 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - Short lines, one idea per line, arrows (→) for flows and sub-lists. Easy to scan on a phone.
 - Hashtags at the end, finishing with `#shorts`.
 - Never a plain "Inside this episode: - item - item" list.
+- **No `<` or `>` characters** in the description (YouTube rejects it: "invalid video description"). Write `=>` as words, e.g. "with format 'ALLSTATS LAST'". Use → arrows instead.
 
 ### 4. Publishing (YouTube via Metricool)
 - YouTube title = short caption line (≤100 chars, ends with `#sql #oracle #shorts`). **No number in the title.**
@@ -69,4 +70,5 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - [ ] Every scene is a moving diagram, no text-only scenes, no overlaps
 - [ ] Caption and description follow the templates above (emoji bullets, hook, question 👇)
 - [ ] Description starts with the number, title has no number
+- [ ] Description has no `<` or `>` (grep before posting)
 - [ ] Private + AI label set in Metricool
