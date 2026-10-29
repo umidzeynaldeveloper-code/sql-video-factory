@@ -16,7 +16,7 @@ Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool 
 1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking · 17 SQL plan baselines · 18 redo & COMMIT (incl. UNDO vs REDO) · 19 result cache · 20 fragmentation & SHRINK
 
 ## Next topics
-21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · next: 33 analytic functions (needs approval)
+21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · 33 analytic functions ✓ · 34 MERGE ✓ · 35 exception handling ✓ · next: 36 package state & ORA-04068 (needs approval)
 
 Owner's backlog requests: (21–23 covered both)
 

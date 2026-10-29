@@ -30,8 +30,11 @@ T_ORIG = {
     30: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     31: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     32: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    33: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    34: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    35: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans", 30: "sql_hints", 31: "bulk_collect_forall", 32: "pga_sorts_temp"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans", 30: "sql_hints", 31: "bulk_collect_forall", 32: "pga_sorts_temp", 33: "analytic_functions", 34: "merge", 35: "exception_handling"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -399,5 +402,41 @@ N = {
  "Adding more temp only moves the problem. Fix the cause. Filter rows as early as possible. Remove sorts nobody needs. Check the join, because a missing join condition creates a huge result. Limit your bulk collects. And then size temp and P G A for the real peak of your end of day.",
  "Remember: the P G A is private memory per process. Work areas do the sorts and hash joins. Too little memory, and they spill to temp, one pass or multi pass. Temp full means O R A sixteen fifty two. Find the S Q L with V dollar temp seg usage.",
  "Next video: analytic functions. Row number, lag, and running totals. " + FOLLOW,
+],
+33: [
+ "The top three payments for every account. The classic way is a self join with a correlated count: slow, and hard to read. With an analytic function, it's one line: row number over, partition by account, order by amount. One pass. Let's see how it works.",
+ "Group by collapses each group into one row. You get the totals, but you lose the details. An analytic function, with the over clause, keeps every row, and adds the group's value right next to it. Now each payment can be compared with its account total, in the same query.",
+ "The over clause has three parts. Partition by splits the rows into groups, but the rows stay. Order by sorts the rows inside each group. And the window frame says which rows the function looks at. Here: the current row and the two before it. And the window slides along.",
+ "What about ties? Two payments of seven hundred. Row number always gives a unique number, and breaks the tie arbitrarily. Rank gives both the same number, then skips: one, two, two, four. Dense rank gives the same number with no gap: one, two, two, three. Add a second order by column if you need a stable result.",
+ "Now the top three per account. Number the rows inside each account, highest amount first. You can't filter on an analytic function in the same select, because it's calculated after the where clause. So wrap it in a subquery, and keep row number three or less. One pass, no self join.",
+ "Lag reads a value from the previous row in the window. Here, yesterday's balance, so you can compute the daily change. The first row has no previous one, so lag returns null, unless you give a default. Lead does the same with the next row.",
+ "A running total is a sum whose window grows, from the first row up to the current row. Each bar is the balance after that payment. Write rows unbounded preceding. With only an order by, the default window is range, and rows with the same date are added together.",
+ "Replacing a self join with an analytic function often turns minutes into seconds. In the plan you'll see a window sort, and every different partition and order combination needs its own sort. Big sorts use P G A and may spill to temp, so filter the rows before the analytic function.",
+ "Remember: over keeps every row. Partition by makes groups, and the rows stay. Row number gives you top N per group. Lag and lead read the previous and next row. And sum over gives running totals, so use rows.",
+ "Next video: merge. Insert or update, in one statement. " + FOLLOW,
+],
+34: [
+ "Every day you load new exchange rates. If a currency exists, update it. If not, insert it. Row by row, that's two statements per row: slow, and open to race conditions. Merge does it in a single statement, for the whole set.",
+ "A merge names a target table, and a source: another table, a view, or any query. The on condition decides which source row belongs to which target row. Matched rows are updated, and rows that don't exist yet are inserted. Both branches are optional.",
+ "Watch it run. Each source row is matched to the target on the currency code. Dollar, euro and pound already exist, so their rates are updated. Lira is new, so it's inserted. Under the hood, Oracle joins the source and the target once, and applies everything in one statement.",
+ "Each branch can have its own condition. Update only the rows whose rate really changed: fewer changes, and less redo. The matched branch can also delete: matching rows marked inactive are removed after the update. And the insert branch can filter which new rows are added.",
+ "Now the classic merge error. The source has two rows for the dollar, and both match the same target row. Which rate wins? Oracle refuses to guess, and raises O R A thirty nine twenty six, unable to get a stable set of rows. The fix: give the source exactly one row per key, for example with row number, latest rate first.",
+ "A few rules to remember. The columns in the on clause can't be updated in the same merge. Each target row can be matched by at most one source row. Make the matching columns unique and indexed. And remember that both insert and update triggers can fire.",
+ "One merge over a hundred thousand rows beats a P L S Q L loop of updates and inserts by a wide margin. And if a few rows are bad, add log errors into an error table, with reject limit unlimited. Bad rows are saved with their error message, and everything else is merged.",
+ "But merge is not a lock. Two sessions merging the same new key at the same moment both see: not matched. Both try to insert. One wins, the other fails with a unique constraint violation. So keep a unique constraint on the key, and handle duplicate value on index by retrying.",
+ "Remember: merge updates and inserts in one pass. The on clause decides how rows match. O R A thirty nine twenty six means duplicates in the source. Log errors puts bad rows aside. And under concurrency, rely on a unique key and a retry.",
+ "Next video: exception handling. Stop hiding your errors. " + FOLLOW,
+],
+35: [
+ "The end of day batch finished successfully. But the next morning, balances are wrong. Somewhere deep in the code there's a handler: when others, then null. The error happened at account six hundred thousand, and nobody saw it. Let's handle errors properly.",
+ "When an error is raised, Oracle looks for a handler in the current block. If there isn't one, the exception travels up to the caller, then its caller, all the way to the top. The first handler that catches it decides what happens next. If it swallows the error, nobody above ever knows.",
+ "Here's the swallower in action. The batch processes six accounts, the seventh fails, and when others then null catches it. To the caller, everything succeeded. The rest is skipped, and the half-done work gets committed. No log, no alert. Oracle even has a compiler warning for this.",
+ "If you catch everything, do two things: log it, and raise it again. Format error stack gives you the message. Format error backtrace gives you the exact package and line where it started: line forty two of calc rate. And the plain raise keeps the error moving up, so the caller still knows.",
+ "But there's a trap. If you insert the log row in the same transaction, the rollback deletes your log too. So mark the logging procedure with pragma autonomous transaction. It runs and commits in its own separate transaction. The main work is rolled back, the log row stays. Use it for logging, not for business logic.",
+ "Catch specific errors, not everything. Pragma exception init gives a name to an Oracle error number, like sixty, deadlock, so you can handle exactly that case, for example by retrying later. For business rules, use raise application error, with a number between minus twenty thousand and minus twenty thousand nine ninety nine, and a clear message.",
+ "So what gets rolled back? The statement that fails is always rolled back. If you handle the exception, the updates before it stay, and if you commit later, you've saved half the work. If the exception reaches the client unhandled, Oracle rolls back everything that call did. That's often the safer outcome.",
+ "In a real system, an error should end up in front of a person. Log it with the backtrace and the input that caused it, in an autonomous transaction. Then raise an alert: to a chat channel, an e-mail, or even a phone call. So a night batch failure is seen at three, not at nine.",
+ "Remember: the first handler decides. When others then null: never. Log, then raise, and use the backtrace for the line number. Autonomous logging survives rollback. And catch only the errors you can actually fix.",
+ "Next video: package state and O R A forty sixty eight. Why deployments break sessions. " + FOLLOW,
 ],
 }
