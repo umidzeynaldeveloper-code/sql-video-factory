@@ -67,7 +67,7 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - English voiceover and text only.
 
 ### 4b. Instagram (connected to Metricool since 2026-10-29)
-- Post every video ALSO as an Instagram Reel: `providers=[instagram]`, `instagramData={type: REEL, showReelOnFeed: true, isAiGenerated: true}`.
+- Post every video ALSO as an Instagram Reel: `providers=[instagram]`, `instagramData={type: REEL, showReelOnFeed: true, isAiGenerated: false}` (owner: NO "AI info" label on Instagram; the AI label rule is for YouTube only).
 - Caption = the Instagram caption (no number), max 5 hashtags. Instagram has no private mode, so it's public immediately.
 - **Every Reel gets a custom cover** (`make_cover.py N` → `covers/coverN.jpg` in sql-developer-videos, sent as `videoThumbnailUrl`). Big title + episode number + hook line, key content inside the centre 3:4 area so the profile grid looks attractive. Never rely on the first frame.
 - Owner posted 1–23 himself; 24–35 were scheduled by Claude on 2026-10-29.
