@@ -24,10 +24,11 @@ Owner's backlog requests: (21–23 covered both)
 
 These rules apply to EVERY video, caption and description. Never simplify or "clean up" an established good format on your own. If a format is changed, it must get better, not plainer.
 
-### 0. NO REAL WORK DATA — ever ⛔
-- Never show or say the owner's real employer data: schema names , package names , table/column names, system names, bank names, real numbers or structures from his work.
-- Use invented, generic names only: APP schema, batch_pkg, accounts, payments, fx_rates…
-- Before every render: `grep -n -i -E <private list> make_videoN.py en/narration.py captions/N.txt` must return nothing.
+### 0. NO REAL WORK DATA — ever ⛔ (top priority, stricter than every other rule)
+The owner works at a bank. Anything he ever shared from his real work environment is CONFIDENTIAL and must never appear anywhere we publish: video frames, narration, captions, titles, descriptions, covers, tags, file names, repo files.
+- Always INVENT random, generic replacements: schema APP, packages batch_pkg / interest / calc_rate, tables accounts / payments / fx_rates, IPs from documentation ranges only (192.0.2.x, 198.51.100.x, 203.0.113.x), made-up numbers.
+- Generic industry words (end of day, night batch, balance, fx rate) are fine; real identifiers are not. When in doubt, rename it.
+- If a leak is found after publishing: stop pending posts (draft), remove the file from this repo's history, re-render with generic names, republish, and list the affected videos for the owner.
 
 ### 1. Videos: schematic, diagrams, motion
 - Every scene is a **diagram**: boxes, arrows, flows, timelines, graphs, tables. No scene that is just text.
