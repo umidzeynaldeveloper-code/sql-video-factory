@@ -24,6 +24,11 @@ Owner's backlog requests: (21–23 covered both)
 
 These rules apply to EVERY video, caption and description. Never simplify or "clean up" an established good format on your own. If a format is changed, it must get better, not plainer.
 
+### 0. NO REAL WORK DATA — ever ⛔
+- Never show or say the owner's real employer data: schema names , package names , table/column names, system names, bank names, real numbers or structures from his work.
+- Use invented, generic names only: APP schema, batch_pkg, accounts, payments, fx_rates…
+- Before every render: `grep -n -i -E <private list> make_videoN.py en/narration.py captions/N.txt` must return nothing.
+
 ### 1. Videos: schematic, diagrams, motion
 - Every scene is a **diagram**: boxes, arrows, flows, timelines, graphs, tables. No scene that is just text.
 - **Motion in every scene**: elements appear step by step, data flows along arrows, bars grow, counters change.
