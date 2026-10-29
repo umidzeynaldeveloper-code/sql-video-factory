@@ -24,8 +24,11 @@ T_ORIG = {
     24: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     25: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     26: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    27: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    28: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    29: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -321,5 +324,41 @@ N = {
  "To find the problem, check hard parses per second in the A W R load profile. Then group V dollar S Q L area by force matching signature: statements that differ only in literals share it, so a high count reveals the culprit. Cursor sharing force can replace literals automatically, but treat it as a band-aid. Fix the code.",
  "Remember: the library cache shares cursors and P L S Q L. A hard parse means a new plan, new memory, and latches. Binds give one cursor for many executions. O R A four zero three one means a fragmented pool. And check why children aren't shared.",
  "Next video: the buffer cache. How Oracle keeps hot blocks in memory. " + FOLLOW,
+],
+27: [
+ "You run a query: two seconds, and fifty thousand disk reads. You run it again: fifty milliseconds, and zero disk reads. Forty times faster, same S Q L. The second run never touched the disk. Meet the buffer cache.",
+ "Oracle never works on data directly on disk. It copies each block from the datafiles into the buffer cache, in the S G A, and every session reads it from there. Reading from memory is a logical read: microseconds. Reading from disk is a physical read: milliseconds. About a thousand times slower.",
+ "So how does Oracle know if a block is already in memory? Every block has an address: file number and block number. Oracle hashes it to pick a bucket, then walks that bucket's short chain, protected by a cache buffers chains latch. Found it? A cache hit. Not there? Oracle reads the block from disk into a free buffer, and links it into the chain.",
+ "The cache is almost always full, so Oracle must decide what stays. It uses an L R U list with a hot end and a cold end. A new block is inserted in the middle, so one read can't push out your hot data. Every access raises the block's touch count. Busy blocks get promoted to the hot end, and cold, untouched buffers are reused first.",
+ "A full scan of a huge table would flush everything useful out of the cache. So for large tables, Oracle often reads the blocks directly into the session's private memory, the P G A. That's a direct path read. Your hot index and lookup blocks stay safe. Small tables are still cached the normal way.",
+ "When you change a row, the block changes in memory, and becomes dirty. The datafile isn't touched yet. The database writer, D B W N, writes dirty blocks to disk later, in batches. If it falls behind, sessions can't find a clean buffer to read into, and they wait: free buffer waits.",
+ "Here's a myth: a ninety nine percent hit ratio means a healthy database. Not true. A bad query that re-reads the same cached blocks five hundred million times has a perfect hit ratio, and still burns your C P U. Logical reads are cheap, not free. Look at buffer gets per execution of your top S Q L, not at the ratio.",
+ "How big should the cache be? Oracle predicts it for you. V dollar D B cache advice estimates physical reads for different cache sizes. The curve drops fast, then flattens. Past the knee, more memory buys almost nothing. You can also keep small hot tables in a keep pool, and send big one-time scans to a recycle pool.",
+ "Remember: the buffer cache keeps blocks in memory. Lookups go through hash buckets and chains. The L R U inserts in the middle and promotes by touch count. Big scans bypass the cache. And fewer reads beat faster reads.",
+ "Next video: indexes, the deep dive. Why Oracle ignores your index. " + FOLLOW,
+],
+28: [
+ "You created an index on branch I D. You query one branch. And the plan says: table access full. The index exists, so why does Oracle ignore it? Often, Oracle is right. Let's look inside a B tree and see why.",
+ "A B tree has a root block, branch blocks, and leaf blocks. The leaves hold sorted keys, each with the ROWID of its table row, and they are linked to each other. To find seven forty two, Oracle reads the root, follows the right branch, and lands on one leaf. Three block reads. The tree stays very flat: three or four levels, even for a hundred million rows.",
+ "For a range, Oracle walks the leaf blocks in key order and collects ROWIDs. Then, for every ROWID, it visits the table block that holds the row. That's the expensive part. For a few rows, it's perfect. For a million rows, it's a million single block visits.",
+ "That cost depends on the clustering factor: how often the table block changes as you walk the index in order. If the table is stored in index order, neighbours share blocks, and the clustering factor is low. If the rows are scattered, every key jumps to another block, and range scans get expensive. Then the optimizer prefers a full scan.",
+ "Picture the costs. A full scan is flat: it reads the whole table once, with big multiblock reads. The index cost grows with every row returned. Somewhere around a few percent of the table, the lines cross. If branch twelve owns thirty percent of all accounts, the full scan really is faster. The optimizer was right.",
+ "In a composite index, column order matters. Queries on the leading column, or the first few columns, use it directly. A query that skips the leading column usually can't. The exception: if the leading column has only a few distinct values, Oracle can do an index skip scan. Put equality columns first, and range columns last.",
+ "Some conditions hide the index completely. A function on the indexed column, like upper of name, or trunc of a date. Or an implicit conversion: comparing a varchar column with a number makes Oracle apply to number to every row. Rewrite the date condition as a range, create a function based index, or compare with the right data type.",
+ "An index that contains every column the query needs is a covering index: no table visit at all. But indexes aren't free. One insert into a table with five indexes changes six structures, and generates redo for each one. Before dropping an index you suspect is unused, make it invisible first, and watch.",
+ "Remember: a B tree lookup is three or four block reads. A range scan adds one table visit per row. A scattered clustering factor makes that costly. In composite indexes, the leading column comes first. And functions hide the index.",
+ "Next video: reading execution plans. Where to start, and what to look at. " + FOLLOW,
+],
+29: [
+ "You open the execution plan for a slow query. Six lines, operations, indentation, names. Where do you even start? Here's a hint: not at the top. Let's read a plan the way Oracle actually runs it, and find the slow step in seconds.",
+ "First, get the real plan. Explain plan only predicts, and with bind variables and real data, the plan that actually ran can be different. Run the query with the gather plan statistics hint. Then call D B M S X plan display cursor, with the format all stats last. Now you see estimates and actual numbers side by side.",
+ "Read the plan as a tree. Each line is a child of the less indented line above it, and a parent can't produce rows until its children do. So start with the first child, and go as deep as you can. In our plan: the full scan of branches runs first, then the index range scan, the table access, the nested loops, the hash join, and finally the select.",
+ "Now watch the rows flow. The hash join first reads all branches and builds a hash table in memory. Then the nested loops start: for each entry from the index, it fetches the account row by ROWID. Those rows stream up into the hash join, which probes the hash table and sends the matches to the top.",
+ "Here's the most powerful trick: compare estimated rows with actual rows, line by line. The optimizer expected ten rows from the index, and got a million. For ten rows, nested loops is perfect. For a million, it's a disaster. Find the first line where the estimate goes wrong. That's your root cause. Fix the statistics, and the plan fixes itself.",
+ "Next, look at starts, buffers, and actual time. Starts shows how many times a step ran. Under nested loops, the inner step runs once for every outer row. Here, the table access by ROWID ran a million times, and took forty one seconds. Sort by buffers or time, and the hotspot is obvious.",
+ "Don't skip the bottom of the plan. Access predicates are used to find rows, through an index. Filter predicates are applied after the rows were read. Here a million rows are fetched, and only two thousand survive the filter. Add that column to the index, and the filter becomes an access. And read the note section: it tells you about baselines and dynamic statistics.",
+ "So here's your five step routine. One: get the real plan with all stats last. Two: read it as a tree, deepest first child first. Three: find the hotspot by buffers and time. Four: find the first line where estimated and actual rows split apart. Five: check the predicates for a filter that should be an access.",
+ "Remember: display cursor shows the plan that really ran. Read it as a tree. Estimated versus actual rows shows where the optimizer went wrong. Starts and buffers show the hotspot. And predicates tell you access versus filter.",
+ "Next video: S Q L hints. When to use them, and when not. " + FOLLOW,
 ],
 }
