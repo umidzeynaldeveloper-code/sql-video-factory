@@ -66,6 +66,11 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - Post in numerical order. Ask the owner to approve topics before each new batch.
 - English voiceover and text only.
 
+### 4b. Instagram (connected to Metricool since 2026-10-29)
+- Post every video ALSO as an Instagram Reel: `providers=[instagram]`, `instagramData={type: REEL, showReelOnFeed: true, isAiGenerated: true}`.
+- Caption = the Instagram caption (no number), max 5 hashtags. Instagram has no private mode, so it's public immediately.
+- Owner posted 1–23 himself; 24–35 were scheduled by Claude on 2026-10-29.
+
 ### 5. Before delivering, check:
 - [ ] Every scene is a moving diagram, no text-only scenes, no overlaps
 - [ ] Caption and description follow the templates above (emoji bullets, hook, question 👇)
