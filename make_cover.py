@@ -4,6 +4,29 @@ from common import *
 from PIL import Image, ImageDraw
 
 COVERS = {
+    1: ("ZEROS &\nONES", "What the computer really sees", CYAN),
+    2: ("UTF-8\nBYTES", "Why 'ə' takes 2 bytes", PINK),
+    3: ("NULL", "Not zero. Not empty.", YEL),
+    4: ("COUNT(*)\nvs COUNT(col)", "They don't return the same!", GREEN),
+    5: ("INDEX", "From full scan to 3 reads", CYAN),
+    6: ("EXPLAIN\nPLAN", "See what Oracle really does", YEL),
+    7: ("JOINS", "Nested loops · Hash · Merge", PURP),
+    8: ("DEADLOCK", "Two transfers, one freeze", RED),
+    9: ("BIND\nVARIABLES", "Same query, 10 000 times", GREEN),
+    10: ("UNDO", "How Oracle remembers the past", PURP),
+    11: ("FLASHBACK", "Undo a DELETE without backup", CYAN),
+    12: ("PARTITIONING", "2 billion rows, read 1 month", YEL),
+    13: ("PARALLEL\nQUERY", "10 GB report, 8 workers", PINK),
+    14: ("MATERIALIZED\nVIEWS", "Dashboard in 0.1 s", GREEN),
+    15: ("OPTIMIZER\nSTATISTICS", "Fast yesterday, slow today", CYAN),
+    16: ("BIND\nPEEKING", "One SQL, two users", PINK),
+    17: ("SQL PLAN\nBASELINES", "Stop plans from flipping", YEL),
+    18: ("REDO &\nCOMMIT", "Why COMMIT is so fast", GREEN),
+    19: ("RESULT\nCACHE", "Answers straight from memory", CYAN),
+    20: ("HIGH WATER\nMARK", "DELETE didn't shrink it?", RED),
+    21: ("AWR IN\n3 MINUTES", "Yesterday 14:00 it was slow", YEL),
+    22: ("UNDO\nvs REDO", "Two journals, two directions", PURP),
+    23: ("DATAFILES\nvs LOG FILES", "What's really on disk", CYAN),
     24: ("LATCHES &\nMUTEXES", "CPU 100%… nothing gets done", PINK),
     25: ("LOCKS &\nENQUEUES", "Who is blocking my UPDATE?", PURP),
     26: ("HARD\nPARSE", "Why literals kill your CPU", RED),
@@ -33,7 +56,7 @@ def cover(n, out):
     ct(d, 318, f"ORACLE  ·  #{n}", SB(48), BG)
     # title
     lines = title.split("\n")
-    fs = 150 if max(len(l) for l in lines) <= 9 else 118 if max(len(l) for l in lines) <= 12 else 98
+    L = max(len(l) for l in lines); fs = 150 if L <= 7 else 124 if L <= 9 else 104 if L <= 11 else 92
     y = 900 - len(lines) * (fs + 20) / 2
     for l in lines:
         ct(d, y + 6, l, SB(fs), (0, 0, 0))
