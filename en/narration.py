@@ -27,8 +27,11 @@ T_ORIG = {
     27: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     28: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     29: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    30: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    31: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    32: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans", 30: "sql_hints", 31: "bulk_collect_forall", 32: "pga_sorts_temp"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -360,5 +363,41 @@ N = {
  "So here's your five step routine. One: get the real plan with all stats last. Two: read it as a tree, deepest first child first. Three: find the hotspot by buffers and time. Four: find the first line where estimated and actual rows split apart. Five: check the predicates for a filter that should be an access.",
  "Remember: display cursor shows the plan that really ran. Read it as a tree. Estimated versus actual rows shows where the optimizer went wrong. Starts and buffers show the hotspot. And predicates tell you access versus filter.",
  "Next video: S Q L hints. When to use them, and when not. " + FOLLOW,
+],
+30: [
+ "In test, with ten thousand rows, you add an index hint, and the query runs in a tenth of a second. Six months later in production, the same query takes twenty five minutes. The hint froze a plan. The data didn't freeze. Hints are powerful, and dangerous.",
+ "A hint is a special comment that starts with slash star plus, placed right after select, update, insert or delete. It tells the optimizer what to do, for example: scan accounts in full. But make a typo, or forget the plus sign, and it's just a comment. Oracle ignores it silently. No error, no warning.",
+ "Hints come in families. Access hints choose a full scan or an index. Join hints choose the join order with leading, and the join method: nested loops, hash, or merge. Others turn on parallel execution, direct path loads with append, or extra diagnostics like gather plan statistics.",
+ "The most common mistake is the alias trap. The table has an alias, a, but the hint uses the table name, accounts. Once a table has an alias, the hint must use that alias. Otherwise Oracle can't match it, and ignores it. For subqueries and views, name the query block with Q B name, and point your hints at it.",
+ "Why do hints age so badly? A hint encodes what you knew on the day you wrote it. Then the data grows, distributions change, and Oracle gets upgraded. The optimizer adapts its plan. The hinted plan stays frozen. That's how a perfect hint becomes a twenty five minute query.",
+ "Some hints are usually safe, because they don't fight the optimizer. Gather plan statistics and monitor only measure. Append asks for a direct path load in a batch insert. Parallel is a deliberate choice for big end of day jobs. And result cache caches a small lookup. Forcing join orders or indexes in O L T P code is the risky part.",
+ "So before you hint, try this. First, fix the statistics and histograms, because wrong estimates cause wrong plans. Need stability? Use a S Q L plan baseline to lock a proven plan. Can't change the code? A S Q L patch attaches a hint to a S Q L I D from outside. And sometimes, simply rewrite the query.",
+ "And how do you know a hint was actually used? From Oracle nineteen c, add plus hint report to the display cursor format. Oracle lists every hint as used or unused, and tells you why: a syntax error, or an alias it couldn't resolve. Always check it after adding a hint.",
+ "Remember: a typo means the hint is silently ignored. Hints must use the table alias. A hinted plan stays frozen while the data grows. Diagnostic and batch hints are usually safe. And statistics, baselines, and S Q L patches often beat a hint.",
+ "Next video: bulk collect and for all. From ten minutes to twenty seconds. " + FOLLOW,
+],
+31: [
+ "A P L S Q L loop updates a million accounts, one row at a time. Ten minutes. Rewrite it with bulk collect and for all: twenty seconds. Same logic, thirty times faster. The secret is context switches. Let's count them.",
+ "P L S Q L code runs in the P L S Q L engine, and every S Q L statement inside it runs in the S Q L engine. Each time control passes between them, that's a context switch. A loop with one update per row pays that price again and again. A million rows means millions of switches. The fix: send the work in batches.",
+ "Bulk collect fetches many rows with a single context switch. Instead of one row per trip, a whole batch arrives at once, and lands in a collection: an array in the session's memory, ready to process.",
+ "But always use a limit. Without it, bulk collect loads every row into memory, and fifty million rows can eat gigabytes. With limit one thousand, you fetch a batch, process it, and fetch the next. Memory stays small and constant. Exit when the collection count is zero, or you'll miss the last partial batch.",
+ "For all does the opposite direction. It sends a whole array of bind values to the S Q L engine in one trip. It looks like a loop, but it isn't. It's one update statement, executed for every element of the collection. One switch per batch, instead of one per row.",
+ "What if one row fails? By default, the first error stops for all. Add save exceptions, and Oracle keeps going: every good row is processed, and every failure is remembered. At the end, it raises an error, and S Q L percent bulk exceptions tells you which element failed, and why.",
+ "Two useful extras. S Q L percent bulk row count tells you how many rows each element changed. Zero means that key wasn't found. And if your collection has gaps, use indices of to skip them, or values of to drive for all from a list of positions.",
+ "But the fastest loop is no loop at all. If the logic fits in one update, insert select, or merge, the S Q L engine does everything in a single call. So the rule is simple: do it in S Q L if you can. If you need P L S Q L logic per row, use bulk collect with limit, and for all.",
+ "Remember: every switch between P L S Q L and S Q L costs time. Bulk collect fetches in batches. Limit keeps memory small. For all sends all the D M L in one call. And save exceptions doesn't stop on bad rows.",
+ "Next video: P G A, sorts, and temp. Why O R A sixteen fifty two wakes you up at three A M. " + FOLLOW,
+],
+32: [
+ "Three twelve in the morning. The end of day batch fails with O R A zero one six five two: unable to extend temp segment. The temp tablespace is a hundred percent full. Who used it all, and why? To answer that, we need to look at private session memory: the P G A.",
+ "The S G A is one shared memory area for the whole instance: buffer cache, shared pool, log buffer. The P G A is different. Every server process gets its own private memory. It adds up fast: two hundred sessions using fifty megabytes each is ten gigabytes of RAM.",
+ "What lives in the P G A? The biggest users are work areas. The sort area handles order by, group by, distinct, and index builds. The hash area holds the build table of a hash join. And P L S Q L collections from bulk collect, and package variables, live there too.",
+ "If a sort fits in the P G A, it runs optimally, entirely in memory. If not, it spills to the temporary tablespace. One pass means it writes once and reads back once: slower, but acceptable. Multi pass means the data goes to temp and back again and again. That's when sorts get really slow, and temp fills up.",
+ "Oracle sizes work areas automatically. P G A aggregate target is the goal for all sessions together. The more sessions sort at the same time, the smaller each one's share, and the more they spill. P G A aggregate limit is the hard cap. Go over it, and Oracle aborts the calls of the sessions using the most memory.",
+ "When work areas spill, they write to the temporary tablespace. Big sorts, hash joins, global temporary tables, and index builds all share it. When it's full, the next session that needs space fails with O R A sixteen fifty two. And often, it's not the session that caused the problem.",
+ "To find the temp hog while it's happening, join V dollar temp seg usage with V dollar session. You see who holds temp, and with which S Q L I D. Usually one statement holds most of it. For the past, A S H records temp space allocated, and V dollar S Q L work area shows optimal, one pass, and multi pass counts.",
+ "Adding more temp only moves the problem. Fix the cause. Filter rows as early as possible. Remove sorts nobody needs. Check the join, because a missing join condition creates a huge result. Limit your bulk collects. And then size temp and P G A for the real peak of your end of day.",
+ "Remember: the P G A is private memory per process. Work areas do the sorts and hash joins. Too little memory, and they spill to temp, one pass or multi pass. Temp full means O R A sixteen fifty two. Find the S Q L with V dollar temp seg usage.",
+ "Next video: analytic functions. Row number, lag, and running totals. " + FOLLOW,
 ],
 }
