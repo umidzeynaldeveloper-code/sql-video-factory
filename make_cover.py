@@ -39,6 +39,9 @@ COVERS = {
     33: ("ANALYTIC\nFUNCTIONS", "Top-N · LAG · running totals", CYAN),
     34: ("MERGE", "Insert or update in ONE go", YEL),
     35: ("WHEN OTHERS\nTHEN NULL", "The most expensive line", RED),
+    36: ("ORA-04068", "Why deploys break sessions", PURP),
+    37: ("SQL\nINJECTION", "' OR '1'='1  · in a search box", RED),
+    38: ("DBMS_\nSCHEDULER", "Let the DB run your batches", GREEN),
 }
 
 def cover(n, out):

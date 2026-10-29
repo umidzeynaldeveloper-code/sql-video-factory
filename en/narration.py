@@ -33,8 +33,11 @@ T_ORIG = {
     33: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     34: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
     35: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    36: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    37: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
+    38: [0, 6, 18, 32, 46, 60, 72, 84, 96, 104, 110],
 }
-SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans", 30: "sql_hints", 31: "bulk_collect_forall", 32: "pga_sorts_temp", 33: "analytic_functions", 34: "merge", 35: "exception_handling"}
+SLUG = {2: "schwa_bytes", 3: "null", 4: "count", 5: "index", 6: "explain_plan", 7: "join", 8: "deadlock", 9: "bind_variables", 10: "undo", 11: "flashback", 12: "partitioning", 13: "parallel_query", 14: "materialized_views", 15: "optimizer_statistics", 16: "bind_peeking", 17: "sql_plan_baselines", 18: "redo_commit", 19: "result_cache", 20: "fragmentation_shrink", 21: "awr", 22: "undo_redo_deep_dive", 23: "datafiles_log_files", 24: "latches_mutexes", 25: "locks_enqueues", 26: "shared_pool_hard_parse", 27: "buffer_cache", 28: "indexes_deep_dive", 29: "reading_execution_plans", 30: "sql_hints", 31: "bulk_collect_forall", 32: "pga_sorts_temp", 33: "analytic_functions", 34: "merge", 35: "exception_handling", 36: "package_state", 37: "dynamic_sql_injection", 38: "dbms_scheduler"}
 FOLLOW = "Follow S Q L developer, number one!"
 
 N = {
@@ -438,5 +441,41 @@ N = {
  "In a real system, an error should end up in front of a person. Log it with the backtrace and the input that caused it, in an autonomous transaction. Then raise an alert: to a chat channel, an e-mail, or even a phone call. So a night batch failure is seen at three, not at nine.",
  "Remember: the first handler decides. When others then null: never. Log, then raise, and use the backtrace for the line number. Autonomous logging survives rollback. And catch only the errors you can actually fix.",
  "Next video: package state and O R A forty sixty eight. Why deployments break sessions. " + FOLLOW,
+],
+36: [
+ "Two o'clock: you deploy a new version of a package. One minute later, the application logs fill up with O R A forty sixty eight: existing state of packages has been discarded. The code is correct. So why does it fail?",
+ "Package level variables live in each session's own memory. The first call runs the initialization block, and from then on every session keeps its own copy until it logs out. Application connection pools keep sessions open for days.",
+ "Now you recompile the package. Every session still holding the old state can't trust it anymore. So the first call fails with O R A forty sixty eight, and the state is thrown away. The second call works: the package is initialized again. But that first error hits the user.",
+ "What gets invalidated depends on what you change. Change only the body, and code that depends on the spec stays valid. Since eleven g, fine grained dependencies help even more: adding a new procedure to the spec doesn't invalidate code that uses other items.",
+ "The real fix is a stateless package: no global variables, pass values as parameters. Keep state in a table or a context instead. Pragma serially reusable keeps state for one call only. And as a safety net, the application can retry once on O R A forty sixty eight.",
+ "For zero downtime deploys, Oracle has edition based redefinition. Old sessions keep using edition one, new sessions get edition two, and nobody gets an error. When the old sessions are gone, you retire the old version.",
+ "Before you deploy, check who is using the package right now in v dollar access. After the deploy, compile only invalid objects with D B M S utility compile schema. And finish with a simple check: no invalid objects left.",
+ "You'll meet the whole family: forty sixty eight, state discarded. Forty sixty one, state invalidated. Forty sixty five, not executed, altered or dropped. And sixty five oh eight, could not find program unit. All of them point to the same moment: a deploy while sessions were using the package.",
+ "Remember: global variables mean one copy per session. A recompile discards that state, so the first call fails and the second works. Stateless packages avoid it, and editions give zero downtime deploys.",
+ "Next video: dynamic S Q L and injection. " + FOLLOW,
+],
+37: [
+ "A search screen. Someone types quote, or one equals one. And the query returns every one of one point two million customers. That's S Q L injection. It only happens with dynamic S Q L built the wrong way.",
+ "Static S Q L is written directly in P L S Q L. It's checked at compile time and uses bind variables automatically, so injection is impossible. Dynamic S Q L is text built at runtime. You need it only for runtime table or column names, optional filters, or D D L.",
+ "The mistake is gluing user input into the S Q L text with the concatenation operator. The quote in the input closes the string, and or one equals one becomes part of the condition. With a bind variable, the S Q L text never changes. Whatever the user types is only a value.",
+ "A smarter attacker adds union select, and reads a completely different table through your search box. User names and password hashes come back as if they were customer names. Whatever the package owner can read, the attacker can read.",
+ "Bind variables work only for values. A table or column name can't be a bind. So validate it first: D B M S assert checks that the input is a real object name or a simple identifier, and raises an error otherwise. Even better: allow only names from a fixed whitelist.",
+ "Search screens often need optional filters. Append only fixed text that you wrote, and pass every value as a bind. A small trick keeps the number of binds the same in every variant. With many filters, D B M S S Q L lets you bind by name.",
+ "By default, a package runs with the privileges of its owner. So an injectable package owned by a powerful schema hands that power to the attacker. Keep owners' privileges minimal, give the application only execute rights, and consider invoker rights where it fits.",
+ "The checklist: static S Q L whenever possible. Bind variables for every value. D B M S assert or a whitelist for names. Least privilege. And in code review, search for the concatenation operator near execute immediate. That's where injections hide.",
+ "Remember: concatenation turns input into code, binds keep it data. Union can leak any table. Names need validation. Values as binds, names validated, privileges minimal. No injection.",
+ "Next video: D B M S scheduler. Let the database run your batches. " + FOLLOW,
+],
+38: [
+ "Two in the morning. Who starts the night batch? A cron script on an application server works, until that server is down. The database can run its own jobs: on time, with history, retries and dependencies.",
+ "D B M S scheduler has three building blocks. A program says what to run: a stored procedure, an anonymous block, or an executable. A schedule says when. A job connects the two. One schedule can drive many jobs, and simple jobs keep everything inline.",
+ "One call creates the job: a name, the job type, what to run, a start date, a repeat interval, and enabled true. From now on, Oracle starts it every night at two. No cron, no external server, no forgotten script.",
+ "The repeat interval is a calendar string. Frequency daily, by hour two. Weekly, Monday to Friday. Every fifteen minutes. Monthly, by month day minus one: the last day of the month. Not sure what you wrote? Evaluate calendar string shows the next run dates before you go live.",
+ "A chain runs several steps with rules. Load finishes, so the calculation starts. Calculation succeeds, so the report runs. If a step fails, a rule can start a different step instead, for example an alert. The dependencies live in the database, not in a script.",
+ "Every run is logged. User scheduler job run details shows the status, the error number and how long each run took. One failed night stands out immediately. Scheduler jobs shows the state and the next run date, and running jobs shows what's running right now.",
+ "Four classic traps. A job never runs twice at the same time: if one run takes longer than the interval, the next one waits. Give the start date a region time zone, or daylight saving shifts your job. Job queue processes zero means nothing runs. And after max failures, a job ends up broken.",
+ "Still using D B M S job? It works, but it's legacy. Since nineteen c, those jobs run as scheduler jobs anyway. For new code use D B M S scheduler only: real names, readable calendars, and a full run history.",
+ "Remember: a job is a program plus a schedule. Calendar strings say when. Chains handle dependencies. Run details keep the history. And a job never overlaps itself.",
+ "Next video: sequences and identity columns. Why gaps are normal. " + FOLLOW,
 ],
 }

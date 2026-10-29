@@ -1,0 +1,26 @@
+Deploy at 14:00 ✅ … 14:01: ORA-04068 everywhere 😱
+"existing state of packages has been discarded"
+The code is correct. So why? 🤔
+
+🧠 Package globals live in EACH session's memory
+   → init block runs on the first call
+   → the copy lives until logout (pools keep sessions for DAYS)
+🔁 Recompile → old state can't be trusted
+   → 1st call: ORA-04068 ❌
+   → 2nd call: works, package re-initialized ✅
+🧩 Change only the BODY → code depending on the spec stays VALID
+🆕 11g+: adding a NEW item to the spec doesn't break users of other items
+🛠️ Fixes:
+   → stateless packages: no globals, pass parameters
+   → state in a table or SYS_CONTEXT
+   → PRAGMA SERIALLY_REUSABLE → state for one call only
+   → app retries once on ORA-04068
+🌗 Editions (EBR): old sessions stay on V1, new sessions get V2 → zero downtime
+🔍 Before deploy: who uses it? V$ACCESS
+✅ After: DBMS_UTILITY.COMPILE_SCHEMA('APP', FALSE) + no INVALID objects left
+👨‍👩‍👧 The family: ORA-04068 · 04061 · 04065 · 06508
+
+Stateless packages, quiet deploys 💡
+
+Have you seen ORA-04068 after a release? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

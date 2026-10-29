@@ -1,0 +1,24 @@
+Search box ➜ ' OR '1'='1 🔍
+Result: ALL 1,200,000 customers 😱
+One input. Whole table leaked 💥
+
+🧱 STATIC SQL → checked at compile time, auto binds → no injection
+🧩 DYNAMIC SQL → only for runtime names, optional filters, DDL
+🐞 The bug: '… WHERE name = ''' || p_name || ''''
+   → the quote closes the string, OR '1'='1' becomes CODE
+✅ The fix: '… WHERE name = :n' USING p_name
+   → input stays DATA, always
+☠️ UNION SELECT username, pwd_hash FROM app_users
+   → any table the owner can read leaks through your search box
+🏷️ Table / column names can't be binds:
+   → DBMS_ASSERT.SQL_OBJECT_NAME / SIMPLE_SQL_NAME
+   → best: a fixed WHITELIST
+🎛️ Optional filters: append only YOUR fixed text, every value as a bind
+👑 Definer rights = injected SQL runs with the OWNER's power
+   → least privilege, app gets EXECUTE only
+🔎 Code review: search for || near EXECUTE IMMEDIATE
+
+Values as binds, names validated, privileges minimal 💡
+
+Have you found concatenated SQL in old code? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

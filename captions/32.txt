@@ -1,0 +1,24 @@
+03:12 AM ⏰ EOD batch fails 💥
+ORA-01652: unable to extend temp segment
+Who ate all the TEMP? 🕵️
+
+🧠 SGA = shared by everyone · PGA = PRIVATE memory per process
+📈 200 sessions × 50 MB = 10 GB of RAM
+🗃️ PGA holds: sorts, hash joins, BULK COLLECT arrays, package state
+✅ OPTIMAL → sort fits in memory
+⚠️ ONE-PASS → spills to TEMP once
+🔥 MULTI-PASS → TEMP and back, again and again 🐌
+🎛️ PGA_AGGREGATE_TARGET = soft goal · PGA_AGGREGATE_LIMIT = hard cap
+🛢️ TEMP full → the NEXT session fails (often not the guilty one!)
+🔍 Find the hog: V$TEMPSEG_USAGE + V$SESSION → SID + SQL_ID
+📜 History: ASH temp_space_allocated, V$SQL_WORKAREA
+🛠️ Real fixes:
+   → filter early
+   → drop needless ORDER BY / DISTINCT
+   → check missing join conditions
+   → LIMIT your BULK COLLECT
+
+More TEMP moves the problem. Less sorting solves it 💡
+
+Has ORA-01652 ever woken you up at night? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

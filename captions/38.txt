@@ -1,0 +1,28 @@
+02:00 🌙 Who starts the night batch?
+A cron script on an app server… until that server is down 💥
+Let the DATABASE run it ⏰
+
+🧩 3 building blocks:
+   → PROGRAM = what runs
+   → SCHEDULE = when
+   → JOB = program + schedule
+⚙️ DBMS_SCHEDULER.CREATE_JOB → name, action, start, repeat_interval, enabled
+📅 Calendar strings:
+   → FREQ=DAILY;BYHOUR=2 → every night
+   → FREQ=WEEKLY;BYDAY=MON-FRI → work days
+   → FREQ=MINUTELY;INTERVAL=15
+   → FREQ=MONTHLY;BYMONTHDAY=-1 → last day of month
+🧪 EVALUATE_CALENDAR_STRING → see the next run dates BEFORE go-live
+⛓️ Chains: LOAD → CALC → REPORT, rules decide the next step (or an alert on failure)
+📊 USER_SCHEDULER_JOB_RUN_DETAILS → status, error#, run_duration
+⚠️ Traps:
+   → a job never overlaps itself, the next run waits
+   → start_date without a region → DST shifts your job
+   → JOB_QUEUE_PROCESSES = 0 → nothing runs
+   → max_failures → BROKEN
+🕰️ DBMS_JOB is legacy (19c+: runs as scheduler jobs)
+
+Let the database run your batches, and keep the history 💡
+
+Cron or DBMS_SCHEDULER: what runs your jobs? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

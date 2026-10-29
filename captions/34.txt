@@ -1,0 +1,22 @@
+Daily FX rates 💱 update if it exists, insert if it's new
+Row by row = 2 statements per row 🐢
+MERGE = 1 statement for the whole set ⚡
+
+🧱 MERGE INTO target USING source ON (match)
+✏️ WHEN MATCHED → UPDATE
+➕ WHEN NOT MATCHED → INSERT
+🎬 USD, EUR, GBP updated · TRY inserted · ONE join, ONE statement
+🎛️ Extras:
+   → UPDATE … WHERE t.rate != s.rate → skip unchanged rows, less redo
+   → DELETE WHERE … inside the matched branch
+💥 ORA-30926: 2 source rows for the SAME key → Oracle won't guess
+   → fix: ROW_NUMBER() and keep rn = 1
+🚫 ON columns can't be updated (ORA-38104)
+🧾 LOG ERRORS INTO err$_fx REJECT LIMIT UNLIMITED → bad rows aside, rest succeeds
+⚔️ Two sessions, same NEW key → both insert → ORA-00001
+   → keep a UNIQUE constraint + retry
+
+One statement for a whole set, as long as the source has one row per key 💡
+
+Do you use MERGE in your daily loads? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

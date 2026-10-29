@@ -1,0 +1,22 @@
+Night batch finished ✅ … but balances are WRONG 😱
+EXCEPTION WHEN OTHERS THEN NULL;
+The most expensive line in PL/SQL 💸
+
+🫧 Exceptions bubble UP the call stack → the first handler decides
+🙈 WHEN OTHERS THEN NULL → error erased, caller sees "success"
+   → half-done work gets COMMITTED
+📝 Do this instead: LOG it, then RAISE
+🔎 DBMS_UTILITY.FORMAT_ERROR_BACKTRACE → exact package + line number
+🧾 PRAGMA AUTONOMOUS_TRANSACTION logger → the log survives ROLLBACK
+🏷️ PRAGMA EXCEPTION_INIT(e_deadlock, -60) → catch what you can FIX
+💼 RAISE_APPLICATION_ERROR(-20010, 'Insufficient funds') → business errors
+↩️ What's rolled back?
+   → failed statement: always
+   → handled: earlier changes STAY
+   → unhandled to client: the whole call is undone
+🚨 Error → log → alert (chat / e-mail / call) → seen at 03:00, not 09:00
+
+Handle what you can fix. Log and re-raise everything else 💡
+
+Have you ever found WHEN OTHERS THEN NULL in production? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

@@ -16,7 +16,7 @@ Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool 
 1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking · 17 SQL plan baselines · 18 redo & COMMIT (incl. UNDO vs REDO) · 19 result cache · 20 fragmentation & SHRINK
 
 ## Next topics
-21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · 33 analytic functions ✓ · 34 MERGE ✓ · 35 exception handling ✓ · next: 36 package state & ORA-04068 (needs approval)
+21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · 33 analytic functions ✓ · 34 MERGE ✓ · 35 exception handling ✓ · 36 package state & ORA-04068 ✓ · 37 dynamic SQL & injection ✓ · 38 DBMS_SCHEDULER ✓ · next: 39 sequences & identity
 
 Owner's backlog requests: (21–23 covered both)
 
@@ -32,6 +32,9 @@ The owner works at a bank. Anything he ever shared from his real work environmen
 - Generic industry words (end of day, night batch, balance, fx rate) are fine; real identifiers are not. When in doubt, rename it.
 - Before every render AND before every publish: grep the script, narration and caption against the private block list (must return nothing) and read the preview sheet frame by frame for any name not from the generic list above.
 - If a leak is found after publishing: put pending posts on hold, remove the file from repo history, re-render with generic names, republish, and list the affected videos for the owner.
+
+### 0b. Length: keep every video ≤ 2:55 ⏱️
+- YouTube treats vertical videos over 3:00 as regular videos, not Shorts. Keep narration ≈ 2,300–2,600 characters per video and check the final duration before publishing.
 
 ### 1. Videos: schematic, diagrams, motion
 - Every scene is a **diagram**: boxes, arrows, flows, timelines, graphs, tables. No scene that is just text.
@@ -80,6 +83,8 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - Caption = the Instagram caption (no number), max 5 hashtags. Instagram has no private mode, so it's public immediately.
 - **Every Reel gets a custom cover** (`make_cover.py N` → `covers/coverN.jpg` in sql-developer-videos, sent as `videoThumbnailUrl`). Big title + episode number + hook line, key content inside the centre 3:4 area so the profile grid looks attractive. Never rely on the first frame.
 - Owner posted 1–23 himself; 24–35 were scheduled by Claude on 2026-10-29.
+- Metricool free plan hit its account limit on 2026-10-29: YouTube can be uploaded directly in Studio (file injected from the raw GitHub URL); Instagram web blocks that, so Instagram needs Metricool or the phone.
+- YouTube custom thumbnails: Studio → video → Thumbnail; inject the file from raw GitHub (thumbs/wideN.jpg for >3:00 videos, covers/coverN.jpg for Shorts). Needs channel verification for more than a few per day.
 
 ### 5. Before delivering, check:
 - [ ] Every scene is a moving diagram, no text-only scenes, no overlaps

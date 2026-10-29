@@ -1,0 +1,19 @@
+1st run: 2 seconds ⏳ · 50,000 disk reads 💿
+2nd run: 0.05 seconds ⚡ · ZERO disk reads
+Same SQL. 40× faster. Why? 🤔
+
+🧠 Buffer cache = Oracle's blocks living in MEMORY (SGA)
+⚡ Logical read = memory (µs) vs 🐢 physical read = disk (ms)
+🔍 Find a block: (file#, block#) → hash bucket → chain → HIT or MISS
+🔥 LRU list: new blocks enter the MIDDLE, not the hot end
+👆 Touch count: busy blocks get promoted, cold ones get reused
+🚛 Huge full scans → direct path read into PGA → your hot data stays safe
+✏️ Changed block = DIRTY → DBWn writes it later
+   → DBWn too slow? "free buffer waits"
+🎭 99% hit ratio ≠ healthy: bad SQL can do 500M logical reads at 99%
+📉 V$DB_CACHE_ADVICE → find the knee of the curve before buying RAM
+
+Fewer reads beat faster reads 💡
+
+What's the biggest "buffer gets per exec" you've ever seen? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

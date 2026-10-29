@@ -14,7 +14,7 @@ def frame(i):
     # 0 HOOK
     if t < T[1]:
         lt, fo = sc(t, T, 0); a = pr(lt, 0, .3) * fo
-        ct(d, 230, "EOD finished ✓ … but balances are wrong", SB(42), WHITE, a)
+        ct(d, 230, "Batch done ✓ … but balances are wrong", SB(42), WHITE, a)
         code(d, 320, [("EXCEPTION", RED), ("  WHEN OTHERS THEN", RED), ("    NULL;   -- \"just in case\"", RED)], pr(lt, .8, 1.2) * fo, 34)
         ab = pr(lt, 2.2, 2.6) * fo
         bar(d, 110, 600, 970, 44, .6, YEL, ab, "accounts processed", "600 000 of 1 000 000")
@@ -72,7 +72,7 @@ def frame(i):
                       ("  RAISE;", YEL)], a, 28)
         ab = pr(lt, 3, 3.4) * fo
         code(d, 640, [("ORA-01476: divisor is equal to zero", RED), ("ORA-06512: at \"APP.CALC_RATE\", line 42", YEL),
-                      ("ORA-06512: at \"APP.INTEREST\", line 118", WHITE), ("ORA-06512: at \"APP.EOD\", line 905", WHITE)], ab, 26)
+                      ("ORA-06512: at \"APP.INTEREST\", line 118", WHITE), ("ORA-06512: at \"APP.NIGHT_BATCH\", line 905", WHITE)], ab, 26)
         d.rounded_rectangle((82, 700, 960, 740), 8, outline=mix(YEL, pr(lt, 5, 5.4) * fo), width=3)
         card_list(d, 900, [("BACKTRACE = the exact line that failed", YEL, 6),
                            ("RAISE = the caller still knows", GREEN, 8)], lt, fo, 80, 30)
@@ -141,7 +141,7 @@ def frame(i):
     elif t < T[8]:
         lt, fo = sc(t, T, 7); a = pr(lt, 0, .4) * fo
         ct(d, 230, "From error to alert", SB(56), PINK, a)
-        nodes = [(540, 360, "exception in EOD", RED), (540, 540, "log_error (autonomous)", PURP),
+        nodes = [(540, 360, "exception in batch", RED), (540, 540, "log_error (autonomous)", PURP),
                  (240, 740, "err_log table", CYAN), (840, 740, "alert: chat / e-mail / call", YEL)]
         for k, (x, y, nm, col) in enumerate(nodes):
             al = pr(lt, .6 + k * 1.2, 1 + k * 1.2) * fo

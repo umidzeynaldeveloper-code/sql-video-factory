@@ -1,0 +1,21 @@
+1,000,000 rows, one by one → 10 minutes 🐢
+BULK COLLECT + FORALL → 20 seconds 🚀
+Same logic. 30× faster. How? 🤔
+
+🏓 PL/SQL engine ⇄ SQL engine = a context switch every time
+💸 1 UPDATE per row = millions of switches
+📦 BULK COLLECT → fetch 1,000 rows in ONE switch
+🧯 Always add LIMIT → memory stays small & constant
+   → EXIT WHEN l_rows.COUNT = 0 (not %NOTFOUND!)
+⚡ FORALL → send ALL the DML in ONE call
+   → looks like a loop, but it's 1 statement with many binds
+🛡️ SAVE EXCEPTIONS → bad rows don't stop the batch
+   → SQL%BULK_EXCEPTIONS tells you which one & why
+🔢 SQL%BULK_ROWCOUNT(i) → rows changed per element
+🕳️ Gaps in the collection? INDICES OF / VALUES OF
+🏆 Fastest of all: ONE SQL statement (UPDATE / MERGE), no loop
+
+SQL if you can. BULK if you must 💡
+
+Do you still see row-by-row loops in your batch jobs? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

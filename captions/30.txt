@@ -1,0 +1,23 @@
+Test: 0.1 seconds ⚡ with your INDEX hint
+Production, 6 months later: 25 MINUTES 🐌
+The hint froze the plan. The data didn't freeze 🧊
+
+💬 Hint = /*+ … */ right after SELECT / UPDATE / INSERT / DELETE
+🤐 Typo or missing "+" → silently IGNORED. No error, no warning
+🗂️ Hint families:
+   → access: FULL, INDEX
+   → join: LEADING, USE_NL, USE_HASH
+   → PARALLEL, APPEND, GATHER_PLAN_STATISTICS
+🪤 Alias trap: FROM accounts a → hint must say INDEX(a …), not INDEX(accounts …)
+📈 Data grows, stats change, Oracle upgrades… your hinted plan stays frozen
+✅ Usually safe: GATHER_PLAN_STATISTICS, MONITOR, APPEND, PARALLEL for batch
+🛠️ Try first:
+   → fix statistics & histograms
+   → SQL plan baseline
+   → SQL patch (hint without touching code!)
+🔍 19c+: DISPLAY_CURSOR format '+HINT_REPORT' → used / unused / why
+
+A hint is a last resort, not a first fix 🎯
+
+What's the worst hint you've found in old code? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

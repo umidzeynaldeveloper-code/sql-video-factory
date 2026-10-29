@@ -1,0 +1,22 @@
+You open the execution plan… 📜
+6 lines, weird indentation, where do you even START? 😵
+Hint: NOT at the top ☝️
+
+🎯 Get the REAL plan:
+   → /*+ GATHER_PLAN_STATISTICS */
+   → DBMS_XPLAN.DISPLAY_CURSOR with format 'ALLSTATS LAST'
+🌳 Read it as a TREE: deepest first child runs first
+🌊 Rows flow UP: hash table from branches ← probes from nested loops
+🔎 #1 trick: E-Rows vs A-Rows
+   → expected 10, got 1,000,000 = wrong plan 💥
+🔁 Starts: how many times a step ran (nested loops inner = once per row!)
+🔥 Buffers + A-Time: the biggest line is your hotspot
+⚖️ Predicates:
+   → access = used to FIND rows ✅
+   → filter = read, then thrown away ❌
+📝 Note section: baselines, dynamic statistics
+
+Don't guess. The plan tells you exactly where the time went 🕵️
+
+Which plan line usually surprises you most? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

@@ -1,0 +1,22 @@
+Top 3 payments per account? 🏆
+Self-join → slow & unreadable 😵
+ROW_NUMBER() OVER → one pass, one line ⚡
+
+🧮 GROUP BY collapses rows · OVER keeps EVERY row + adds a column
+🧩 OVER ( ) has 3 parts:
+   → PARTITION BY = groups (rows stay)
+   → ORDER BY = order inside the group
+   → ROWS BETWEEN … = the sliding window
+🥇 Ties: ROW_NUMBER 1-2-3-4 · RANK 1-2-2-4 · DENSE_RANK 1-2-2-3
+🎯 Top-N per group: wrap in a subquery → WHERE rn ≤ 3
+   → analytics run AFTER the WHERE clause
+⏪ LAG = previous row · LEAD = next row → daily balance change
+📈 Running total: SUM(amt) OVER (… ROWS UNBOUNDED PRECEDING)
+   → write ROWS! The default RANGE adds up same-date rows together
+🐢→⚡ Self-join 48 s → analytic 3 s
+🧠 WINDOW SORT in the plan → filter rows BEFORE the analytic
+
+Need a neighbour or a group value? Reach for OVER 💡
+
+What's your favourite analytic function? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

@@ -1,0 +1,19 @@
+Your UPDATE just… waits ⏳ 1 minute. 2 minutes. 5 minutes 😤
+"enq: TX - row lock contention". Who is blocking you? 🕵️
+
+🔒 Oracle stores the row lock IN the row itself (ITL slot in the block)
+♾️ No central lock list → lock millions of rows for free
+🚶‍♂️🚶‍♀️🚶 Waiters line up in a fair FIFO queue
+✅ COMMIT / ROLLBACK → the next session in line gets the row
+🏛️ TM lock: every DML guards the table from DDL
+   → ALTER TABLE waits or fails: ORA-00054 resource busy
+🪤 Unindexed foreign key → delete a parent = lock the WHOLE child table
+   → fix: CREATE INDEX on the FK column 🛠️
+⚡ SELECT … FOR UPDATE SKIP LOCKED → parallel queue workers, zero waiting
+🌳 Find the root blocker: V$SESSION.BLOCKING_SESSION
+💀 Lock rows in the same ORDER, or meet ORA-00060 deadlock
+
+Short transactions = happy database 😌
+
+What's the longest lock wait you've ever seen? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

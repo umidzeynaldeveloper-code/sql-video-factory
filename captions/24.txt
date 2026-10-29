@@ -1,0 +1,19 @@
+CPU at 100% 🔥 … but nothing gets done? 😵
+The culprit: tiny memory locks called LATCHES & MUTEXES 🔒
+
+🧠 The SGA is shared memory → hundreds of sessions touch the same lists
+💥 Two changes at the same instant = corrupted memory
+🔒 Latch / mutex = "one at a time" guard, held for MICROseconds
+⚖️ Latch ≠ Lock:
+   → latch guards MEMORY, no queue
+   → lock guards ROWS, fair FIFO queue, held until COMMIT
+🌀 Latch busy? The session SPINS on CPU… then sleeps 😴… then retries
+🔥 cache buffers chains = everyone hammering ONE hot block
+🧷 Mutexes guard cursors → "cursor: pin S", "library cache: mutex X"
+🩺 Diagnose: V$LATCH (gets / misses / sleeps), V$MUTEX_SLEEP, ASH + SQL_ID
+🛠️ Real fix: fewer logical reads, bind variables, fewer calls
+
+Latches are the symptom. The SQL is the cause 🎯
+
+Have you ever seen "cache buffers chains" in your AWR? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

@@ -1,0 +1,23 @@
+You created an index 🌳
+Oracle still does TABLE ACCESS FULL 😤
+Is Oracle wrong? Usually… NO 👀
+
+🌳 B-tree: ROOT → BRANCH → LEAF (sorted keys + ROWIDs)
+🎯 Find one key = 3–4 block reads, even with 100M rows
+🔁 Range scan = walk the leaves + 1 table visit PER ROW
+🧲 Clustering factor:
+   → rows stored in index order = cheap ✅
+   → rows scattered = every key jumps to a new block ❌
+📈 Index cost grows per row, full scan cost is flat
+   → they cross at just a few % of the table
+🧩 Composite index (branch, type, date): leading column first!
+   → skip scan when the leading column has few values
+🚫 Index killers: UPPER(col), TRUNC(date), VARCHAR2 = number
+🛠️ Fix: range conditions, function-based index, right data types
+💸 Every index slows down INSERT/UPDATE/DELETE + more redo
+👻 Unused index? Make it INVISIBLE first, then decide
+
+An ignored index is often the RIGHT decision 🧠
+
+Which index killer have you found in production code? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

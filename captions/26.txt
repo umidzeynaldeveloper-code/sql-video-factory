@@ -1,0 +1,19 @@
+The same query 10,000 times 🔁
+CPU 95% 🔥 and most of it is… PARSING 😱
+
+🏊 Shared pool = library cache + dictionary cache + result cache
+🔍 Every SQL: syntax check → semantic check → hash lookup
+✅ Found → SOFT parse: reuse the plan
+❌ Not found → HARD parse: optimize + allocate memory + latches 💸
+🧨 Literals: WHERE id = 1001, 1002, 1003… → 10,000 cursors
+🎯 Binds: WHERE id = :id → 1 cursor, 10,000 executions
+🥇 Best of all: NO parse → keep the cursor open (PL/SQL does it for you)
+🧩 Literal storm → fragmented pool → ORA-04031 out of shared memory
+👨‍👧‍👦 Same text, many child cursors? Ask V$SQL_SHARED_CURSOR why
+🕵️ Find the culprits: GROUP BY force_matching_signature in V$SQLAREA
+🩹 CURSOR_SHARING=FORCE is a band-aid, not a cure
+
+Parse once, execute many 💡
+
+Do you still find concatenated dynamic SQL in your code? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
