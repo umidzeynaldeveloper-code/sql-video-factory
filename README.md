@@ -93,3 +93,9 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - [ ] Description starts with the number, title has no number
 - [ ] Description has no `<` or `>` (grep before posting)
 - [ ] Private + AI label set in Metricool
+
+## Channel setup (2026-11-06)
+- Banner + logo: sql-developer-videos/branding/ (script make_brand.py). Published.
+- Playlists (public): SQL Basics (1–7) · Oracle Internals (8, 10, 11, 18, 22–27) · Oracle Performance & SQL Tuning (9, 12–17, 19–21, 28–30, 32) · PL/SQL & Advanced SQL (31, 33–38). Add every new video to its playlist.
+- Home tab turned ON with a "Created playlists" section.
+- Pinned comments: blocked — pinning needs YouTube's one-time "advanced features" verification. One channel comment (playlists + Instagram) posted on video 38, unpinned.
