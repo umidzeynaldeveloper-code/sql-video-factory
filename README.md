@@ -85,7 +85,7 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - Owner posted 1–23 himself; 24–35 were scheduled by Claude on 2026-10-29.
 - Metricool free plan hit its account limit on 2026-10-29: YouTube can be uploaded directly in Studio (file injected from the raw GitHub URL); Instagram web blocks that, so Instagram needs Metricool or the phone.
 - YouTube custom thumbnails: Studio → video → Thumbnail; inject the file from raw GitHub (thumbs/wideN.jpg for >3:00 videos, covers/coverN.jpg for Shorts). Needs channel verification for more than a few per day (about 9 per day).
-- YouTube custom covers done: 22, 23, 24–38 (24–34 via Metricool, 30/32 already set), 29, 35–38, 6–21. Remaining: Shorts 1–5 (next daily batch). Studio localStorage key `__vmap` maps video number → id on the Studio origin.
+- YouTube custom covers done: 22, 23, 24–38 (24–34 via Metricool, 30/32 already set), 29, 35–38, 1–21. ALL 38 videos have custom covers (finished 2026-11-05). Studio localStorage key `__vmap` maps video number → id on the Studio origin.
 
 ### 5. Before delivering, check:
 - [ ] Every scene is a moving diagram, no text-only scenes, no overlaps
