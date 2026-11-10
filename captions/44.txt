@@ -1,0 +1,21 @@
+SELECT * FROM my_plsql_function() 🤯
+PL/SQL logic → rows you can JOIN and report on
+
+📦 Normal table function: builds ALL rows in PGA, returns at the end
+   → 1M rows = 1M rows in memory, caller waits
+🚰 PIPELINED: PIPE ROW(r) streams each row immediately
+   → first rows arrive at once, memory stays flat
+🧱 Object type + table type + PIPELINED + PIPE ROW + RETURN;
+   → SELECT * FROM TABLE(fees())  (12.2+: FROM fees())
+🎯 Use cases:
+   → parse CSV / CLOB into rows
+   → one SELECT for the BI tool, rules stay in PL/SQL
+   → streaming ETL: f3(f2(f1(source)))
+🛑 FETCH FIRST 5 → NO_DATA_NEEDED inside the function → clean up, re-raise
+🎲 Optimizer guesses 8168 rows → CARDINALITY hint / dynamic sampling
+🚀 PARALLEL_ENABLE (PARTITION c BY ANY) → parallel servers
+
+Stream rows from PL/SQL straight into SQL 💡
+
+Have you used pipelined functions in a project? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

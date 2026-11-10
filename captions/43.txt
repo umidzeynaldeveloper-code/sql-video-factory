@@ -1,0 +1,22 @@
+50 users run the same report 📊
+All writing to ONE scratch table? 😬
+Use temporary tables 🧊
+
+🏗️ GLOBAL TEMPORARY TABLE: definition shared, rows PRIVATE per session
+   → stored in TEMP, no locks between users
+⏳ ON COMMIT DELETE ROWS (default) → empty after COMMIT
+   ON COMMIT PRESERVE ROWS → kept until logout
+   → TRUNCATE removes only YOUR rows
+⚡ Less redo: rows need no recovery
+   → 12c TEMP_UNDO_ENABLED → undo in TEMP, almost no redo
+📈 10 rows here, 1M there → 12c session-private statistics
+☠️ Trap: connection pools + PRESERVE ROWS → next user sees old rows
+   → clean at the start of every call
+🔒 18c PRIVATE TEMPORARY TABLES: even the definition is private
+   → name must start with ORA$PTT_
+✅ Create once in your install script, never inside procedures
+
+One definition, private rows, always start clean 💡
+
+Do you use GTTs or WITH clauses for scratch data? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

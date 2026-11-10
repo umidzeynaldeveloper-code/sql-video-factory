@@ -42,6 +42,12 @@ COVERS = {
     36: ("ORA-04068", "Why deploys break sessions", PURP),
     37: ("SQL\nINJECTION", "' OR '1'='1  · in a search box", RED),
     38: ("DBMS_\nSCHEDULER", "Let the DB run your batches", GREEN),
+    39: ("SEQUENCE\nGAPS", "Where did 1003 go?", YEL),
+    40: ("ROWNUM\nTRAP", "Top 10 that isn't top 10", RED),
+    41: ("ORA-04091", "Mutating table, fixed right", PINK),
+    42: ("COLLECTIONS", "Map · set · short list", CYAN),
+    43: ("TEMP\nTABLES", "Private rows for every session", PURP),
+    44: ("PIPELINED\nFUNCTIONS", "SELECT from PL/SQL", GREEN),
 }
 
 def cover(n, out):

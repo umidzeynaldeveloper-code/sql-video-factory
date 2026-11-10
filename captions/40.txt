@@ -1,0 +1,23 @@
+"Top 10 biggest payments"
+WHERE ROWNUM ≤ 10 ORDER BY amount DESC
+Fast. Looks right. WRONG rows 😱
+
+🔢 ROWNUM is assigned BEFORE ORDER BY
+   → Oracle takes the first 10 it finds, then sorts them
+🚫 WHERE ROWNUM greater than 1 → always 0 rows
+   → the next row becomes #1 again… forever
+✅ Pre-12c: sort in an inline view, ROWNUM outside
+   → plan: SORT ORDER BY STOPKEY
+✨ 12c+: ORDER BY … FETCH FIRST 10 ROWS ONLY
+   → OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY
+   → WITH TIES: keeps rows equal to the last one
+🐌 Page 10,000 with OFFSET = read 100,000 rows, keep 10
+⚡ Keyset pagination: continue after the last row
+   → rows with an earlier created, or same created and a smaller id
+   → index (created, id) → every page equally fast
+🔁 Same row on 2 pages? End ORDER BY with a unique column
+
+Sort first, cut second, continue from the last row 💡
+
+Do your screens still use OFFSET for deep pages? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

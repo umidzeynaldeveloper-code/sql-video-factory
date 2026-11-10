@@ -1,0 +1,22 @@
+One UPDATE. One trigger.
+ORA-04091: table is mutating, trigger may not see it 💥
+Why does Oracle stop you? 🤔
+
+🔄 A ROW trigger fires while the UPDATE is still running
+   → half the rows new, half old
+   → a SUM read now is neither answer
+⚠️ Happens when a row trigger reads/changes its OWN table
+   → multi-row UPDATE / DELETE / INSERT … SELECT
+   → single-row INSERT … VALUES and statement triggers are fine
+🚫 "Fix" from the internet: PRAGMA AUTONOMOUS_TRANSACTION
+   → sees only committed data → no error, WRONG result
+✅ 11g+: COMPOUND TRIGGER
+   → AFTER EACH ROW: just remember the ids
+   → AFTER STATEMENT: table is complete → check safely
+🧭 Better: business rules in the API package, CHECK constraints for simple rules
+🧪 Always test triggers with a MULTI-row update
+
+Remember rows in each row, do the work after the statement 💡
+
+Have you hit ORA-04091 in production? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

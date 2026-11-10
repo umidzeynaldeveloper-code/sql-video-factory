@@ -1,0 +1,22 @@
+3 kinds of arrays in PL/SQL 🧺
+Pick the wrong one → ORA-06531 before you store a single value 😵
+
+🗺️ ASSOCIATIVE ARRAY (INDEX BY)
+   → key → value, even INDEX BY VARCHAR2(3) for 'USD'
+   → no constructor, no EXTEND, gaps are fine
+   → perfect in-memory lookup cache
+📦 NESTED TABLE
+   → no init → ORA-06531 · no EXTEND → ORA-06533
+   → as a SQL type: SELECT … FROM TABLE(:ids)
+📏 VARRAY(n)
+   → fixed maximum, always dense, order kept
+   → element n+1 → ORA-06532
+🕳️ Trap: DELETE(3) then FOR i IN 1 .. COUNT → NO_DATA_FOUND
+   → walk with FIRST / NEXT, or FORALL … INDICES OF
+🎯 500 ids as ONE bind instead of 500 literals
+🧰 COUNT · FIRST · LAST · NEXT · EXTEND · TRIM · DELETE · EXISTS (never raises)
+
+Map, set or short list: pick the collection by its job 💡
+
+Which one do you use the most? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀

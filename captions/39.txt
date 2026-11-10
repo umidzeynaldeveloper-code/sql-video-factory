@@ -1,0 +1,24 @@
+Invoice 1002 → then 1005 😳
+Where did 1003 and 1004 go? 🕵️
+Gaps are NOT a bug 💡
+
+🔢 Sequence = a number dispenser, no table lock
+🧠 CACHE 20 → 20 numbers in memory, 1 dictionary write per 20
+↩️ NEXTVAL is never rolled back
+🕳️ 3 sources of gaps:
+   → ROLLBACK: the number is used, the row is gone
+   → instance restart: cached numbers are lost
+   → RAC: one cache per node → unique, not in time order
+☠️ SELECT MAX(id) + 1 → two sessions, same id → ORA-00001
+🆔 12c+: GENERATED ALWAYS / BY DEFAULT / BY DEFAULT ON NULL AS IDENTITY
+   → still a sequence underneath, same gaps
+🐢 NOCACHE + busy inserts → "enq: SQ - contention"
+   → ALTER SEQUENCE … CACHE 1000
+⏱️ Need time order? Store a timestamp, not the id
+🧾 Truly gap-free? Counter row + FOR UPDATE in the same transaction
+   → price: inserts wait for each other
+
+Sequences promise UNIQUE numbers, not gap-free ones 💡
+
+Have you ever been asked to "fix the gaps"? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
