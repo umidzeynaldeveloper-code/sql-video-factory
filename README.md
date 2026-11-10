@@ -99,3 +99,7 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 - Playlists (public): SQL Basics (1–7) · Oracle Internals (8, 10, 11, 18, 22–27) · Oracle Performance & SQL Tuning (9, 12–17, 19–21, 28–30, 32) · PL/SQL & Advanced SQL (31, 33–38). Add every new video to its playlist.
 - Home tab turned ON with a "Created playlists" section.
 - Pinned comments: blocked — pinning needs YouTube's one-time "advanced features" verification. One channel comment (playlists + Instagram) posted on video 38, unpinned.
+
+### Format rule (owner, 2026-11-10)
+- Shorts / Reels: vertical 9:16 (1080×1920), ≤ 2:55.
+- Long videos: horizontal 16:9 (1920×1080), made to be watched with the phone turned sideways or on desktop. Script: long1/long1.py.
