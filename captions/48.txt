@@ -1,0 +1,23 @@
+Org chart. Chart of accounts. Bill of materials 🌳
+Every row points to its parent. One SELECT for the whole tree?
+
+🧬 Table: id, parent_id, name
+🔗 START WITH parent_id IS NULL
+   CONNECT BY PRIOR id = parent_id
+   → LEVEL = depth, indent with LPAD
+🧰 SYS_CONNECT_BY_PATH · CONNECT_BY_ISLEAF
+   CONNECT_BY_ROOT · ORDER SIBLINGS BY
+🔄 Loop in data → ORA-01436
+   → NOCYCLE + CONNECT_BY_ISCYCLE
+⚠️ WHERE filters rows, children stay
+   → condition in CONNECT BY prunes the branch
+✨ 11gR2+: recursive WITH
+   → SEARCH DEPTH FIRST · CYCLE clause
+⚡ Index parent_id
+
+Start with the roots, connect by prior 💡
+
+CONNECT BY or recursive WITH: which do you use? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #sql #hierarchy #connectby #database

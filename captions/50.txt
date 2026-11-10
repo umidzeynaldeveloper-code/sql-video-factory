@@ -1,0 +1,21 @@
+Sales: one row per branch and month.
+Report: one row per branch, months as columns 📊
+
+🧮 Old way: SUM(CASE WHEN month = 'JAN' THEN amount END)
+✨ 11g+: PIVOT (SUM(amount) FOR month IN ('JAN' AS jan, …))
+⚠️ Hidden GROUP BY: every other column groups
+   → an id column = one row per id
+   → always pivot from an inline view
+➕ Several aggregates → JAN_TOTAL, JAN_CNT…
+📌 IN list = constants only
+   → dynamic SQL or PIVOT XML … ANY
+🔄 UNPIVOT: columns back to rows
+   → NULLs dropped unless INCLUDE NULLS
+⚡ Same speed as CASE: one pass, one GROUP BY
+
+Pivot from an inline view, filter before you pivot 💡
+
+PIVOT or CASE: what's in your reports? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #sql #pivot #reporting #database

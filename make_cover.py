@@ -48,6 +48,12 @@ COVERS = {
     42: ("COLLECTIONS", "Map · set · short list", CYAN),
     43: ("TEMP\nTABLES", "Private rows for every session", PURP),
     44: ("PIPELINED\nFUNCTIONS", "SELECT from PL/SQL", GREEN),
+    45: ("LOST\nUPDATE", "Where did +10 go?", RED),
+    46: ("SKIP\nLOCKED", "A safe job queue", GREEN),
+    47: ("DATE\nTRAPS", "Why Nov 30 went missing", YEL),
+    48: ("CONNECT\nBY", "A whole tree in one SELECT", CYAN),
+    49: ("FK\nWITHOUT\nINDEX", "One delete locks a table", PINK),
+    50: ("PIVOT", "Rows into columns", PURP),
 }
 
 def cover(n, out):

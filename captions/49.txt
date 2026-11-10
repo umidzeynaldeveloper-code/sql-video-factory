@@ -1,0 +1,23 @@
+DELETE FROM clients WHERE id = 42
+→ PAYMENTS locked, 50 sessions waiting 😱
+
+📏 PK · UNIQUE · FK · CHECK · NOT NULL
+   → ORA-00001 · 02291 · 02292 · 02290 · 01400
+🔑 PK / UNIQUE create (or reuse) an index
+   → FOREIGN KEY creates NONE
+🔒 Unindexed FK + parent DELETE / key UPDATE
+   → child table lock for the statement + full scan
+   → blocking and deadlocks
+✅ CREATE INDEX on the FK columns
+⏳ DEFERRABLE INITIALLY DEFERRED → checked at COMMIT
+   → invalid? ORA-02091, whole transaction rolled back
+🗄️ ENABLE NOVALIDATE: check new rows, trust old ones
+⚡ Constraints help the optimizer
+   → join elimination · COUNT(*) via index
+
+Index every foreign key you delete through 💡
+
+Have you hunted an unindexed FK lock? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #sql #constraints #foreignkey #database

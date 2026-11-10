@@ -1,0 +1,23 @@
+5 workers. 1 queue. The same job paid 5 times 💸
+Or everyone waits all night ⏳
+
+🔒 FOR UPDATE locks the selected rows until COMMIT / ROLLBACK
+   → plain SELECTs still read them
+⏱️ How long to wait?
+   → default: forever
+   → NOWAIT → ORA-00054 resource busy
+   → WAIT 3 → ORA-30006 after 3 seconds
+🚀 SKIP LOCKED: rows locked by others are skipped
+   → every worker gets its own jobs, nobody waits
+🧑‍💻 Cursor … FOR UPDATE SKIP LOCKED + BULK COLLECT LIMIT 10
+⚠️ ROWNUM 10 + SKIP LOCKED can return 0 rows
+   → ROWNUM picks rows BEFORE locked ones are skipped
+🎯 FOR UPDATE OF j.status · WHERE CURRENT OF c
+🚫 COMMIT inside a FOR UPDATE loop → ORA-01002
+
+Lock what you process, skip what others hold 💡
+
+Do you use SKIP LOCKED for queues? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #plsql #locking #concurrency #database

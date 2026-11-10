@@ -1,0 +1,24 @@
+Balance 100. Cashier A adds 10, cashier B adds 50.
+Final balance: 150 😱 Where did +10 go?
+
+🔍 READ COMMITTED (default) is per STATEMENT
+   → each query sees data committed before it began
+   → readers never block writers · dirty reads impossible
+🔁 Same SELECT twice in one transaction → can differ
+💥 Lost update: read → compute in the app → write back
+   → last write wins, no error
+✅ 3 fixes
+   → SET balance = balance + 10
+   → SELECT … FOR UPDATE
+   → version column: 0 rows updated → retry
+🧊 SERIALIZABLE: one snapshot for the whole transaction
+   → ORA-08177 can't serialize access → retry
+📊 SET TRANSACTION READ ONLY for consistent reports
+🚫 No READ UNCOMMITTED in Oracle
+
+Never read, compute, write without a lock 💡
+
+Have you ever lost an update in production? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #sql #transactions #isolation #database

@@ -1,0 +1,23 @@
+WHERE created BETWEEN DATE '2026-11-01' AND DATE '2026-11-30'
+Nov 30 payments: missing 😱
+
+🕛 An Oracle DATE always has a time
+   → DATE '2026-11-30' = midnight
+✅ Half-open range
+   → from Nov 1 inclusive, up to Dec 1 exclusive
+   → index friendly, no TRUNC on the column
+⏱️ TIMESTAMP: fractions up to 9 digits (default 6)
+➗ DATE − DATE = days (0.5 = 12 h)
+   TS − TS = INTERVAL DAY TO SECOND
+🌍 SYSDATE = DB server clock · CURRENT_DATE = session time zone
+   → TIMESTAMP WITH LOCAL TIME ZONE for global apps
+📆 ADD_MONTHS(Jan 31, 1) → Feb 28
+   → + INTERVAL '1' MONTH → ORA-01839
+🚫 TO_DATE without a format depends on NLS settings
+
+A date has a time. Use half-open ranges 💡
+
+Which date bug hurt you the most? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#oracle #sql #datetime #plsql #database
