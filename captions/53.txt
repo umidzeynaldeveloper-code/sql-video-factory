@@ -1,0 +1,21 @@
+Names in one table. Orders in another.
+Who bought what? 🤔
+
+🗂️ Why two tables? Store the name ONCE
+   → orders keep only a number: customer_id
+🎟️ Like a coat check: same number, same owner
+🔗 JOIN … ON o.customer_id = c.id
+   → each match becomes one result row
+👻 Leyla has no orders → missing from INNER JOIN
+✅ LEFT JOIN keeps every customer
+   → no partner = NULL
+   → WHERE o.id IS NULL = never ordered
+💥 No ON rule → every row × every row
+   → 3 × 4 = 12 rows, real tables = billions
+
+Always write the ON rule 💡
+
+INNER or LEFT: which do you use more? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #join #learnsql #database

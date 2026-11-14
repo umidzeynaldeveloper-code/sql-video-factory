@@ -1,0 +1,21 @@
+SELECT city, amount … GROUP BY city
+→ ORA-00979: not a GROUP BY expression 😵
+
+🧾 GROUP BY = sort receipts into piles by city
+   → 7 rows become 3 piles
+🧮 Aggregates turn a pile into ONE value
+   → COUNT(*) · SUM · AVG · MIN · MAX
+❓ One line per pile, but Baku has 3 amounts
+   → which one goes in the cell? Oracle refuses
+📏 The rule: every column in SELECT is
+   → in GROUP BY, or inside an aggregate
+🛠️ Fix 1: MAX(amount) · Fix 2: GROUP BY city, amount
+👥 GROUP BY city, year → smaller piles
+🕳️ COUNT(*) counts rows · COUNT(coupon) skips NULLs
+
+Ask: what ONE value do I want per pile? 💡
+
+Have you hit ORA-00979 before? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #groupby #learnsql #database

@@ -1,0 +1,20 @@
+Ali sends 100 AZN to Sara.
+Power cut in the middle 😱 Is the money gone?
+
+✏️ Every change is written in pencil
+🖊️ COMMIT = rewrite in pen: permanent, everyone sees it
+🧽 ROLLBACK = eraser: back to the last commit
+📦 Transaction = all changes, or none
+🙈 Before COMMIT only YOU see your changes
+💥 Crash? Oracle rolls back automatically
+⚠️ DDL (CREATE, ALTER, DROP, TRUNCATE)
+   → secret COMMIT before and after
+🔒 Uncommitted rows stay locked
+   → colleagues wait until you finish
+
+Always finish what you start: COMMIT or ROLLBACK 💡
+
+Ever lost work to an implicit commit? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #transactions #plsql #database

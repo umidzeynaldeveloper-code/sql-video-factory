@@ -1,0 +1,21 @@
+You write SELECT first.
+The database runs it 5th 😮
+
+📦 Think of a box of receipts: table = box, row = one receipt
+1️⃣ FROM: open the box, take all rows
+2️⃣ WHERE: throw away single rows (amount above 15?)
+3️⃣ GROUP BY: sort rows into piles by city
+4️⃣ HAVING: throw away whole piles (total above 50?)
+5️⃣ SELECT: one line per pile, give names (aliases)
+6️⃣ ORDER BY: sort the final result
+💥 Why WHERE can't use a SELECT alias
+   → ORA-00904: invalid identifier
+   → the alias is born later, in step 5
+✅ ORDER BY can use it: sorting is the last step
+
+Get rows · filter rows · make groups · filter groups · pick columns · sort 💡
+
+Did you know SQL runs in this order? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #database #learnsql #plsql

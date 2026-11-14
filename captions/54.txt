@@ -1,0 +1,20 @@
+Which orders are bigger than the average?
+First you need the average 🤔
+
+👩‍🏫 Like a teacher: average first, then compare students
+🥇 The inner query runs FIRST
+   → (SELECT AVG(amount) FROM orders) becomes 40
+📋 IN (SELECT …) → the inner result is a LIST
+⚠️ NOT IN with a NULL in the list
+   → unknown → ZERO rows, no error
+   → fix: filter NULLs or use NOT EXISTS
+✅ EXISTS: is there at least one? stops at the first match
+💥 = (SELECT …) returning many rows
+   → ORA-01427 · use IN
+
+The inner answer feeds the outer question 💡
+
+Which subquery trap got you? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #subquery #learnsql #database

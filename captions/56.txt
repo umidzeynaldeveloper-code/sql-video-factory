@@ -1,0 +1,20 @@
+Same query. Same data.
+4.2 seconds vs 0.01 seconds 🤯
+
+📖 Like the index at the back of a book
+   → sorted words + page numbers
+🐢 No index = FULL TABLE SCAN: read every block
+📇 Index = sorted copy of one column + ROWID
+   → ROWID = the row's address
+🌳 B-tree: 1,000,000 rows → only 3–4 jumps
+💸 Not free: every INSERT / UPDATE / DELETE updates every index
+🎯 Index the columns you SEARCH by
+🙈 WHERE UPPER(name) = 'AYSEL' → normal index not used
+📊 Returning most of the table? Full scan is faster
+
+Sorted column + row address = instant search 💡
+
+Which column would you index first? 👇
+Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
+
+#sql #oracle #index #performance #database

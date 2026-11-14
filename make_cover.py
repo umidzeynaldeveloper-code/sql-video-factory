@@ -54,6 +54,12 @@ COVERS = {
     48: ("CONNECT\nBY", "A whole tree in one SELECT", CYAN),
     49: ("FK\nWITHOUT\nINDEX", "One delete locks a table", PINK),
     50: ("PIVOT", "Rows into columns", PURP),
+    51: ("SQL\nRUNS\nBACKWARDS", "The real order of a SELECT", GREEN),
+    52: ("GROUP BY", "Piles, totals & ORA-00979", PURP),
+    53: ("JOIN", "How two tables meet", CYAN),
+    54: ("SUB-\nQUERIES", "A question inside a question", YEL),
+    55: ("COMMIT\nROLLBACK", "Pencil, pen & eraser", PINK),
+    56: ("INDEXES", "Why some queries are instant", GREEN),
 }
 
 def cover(n, out):
