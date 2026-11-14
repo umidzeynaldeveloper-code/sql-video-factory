@@ -1,5 +1,7 @@
 # SQL video factory
 
+> ⭐ **From video 51 on, every video follows [STYLE_V2.md](STYLE_V2.md)** (Full HD, beat-synced narration, spotlight lighting, beginner-first analogies). Engine: `v2/studio.py`.
+
 > ⚠️ **Read the "Quality rules" section before making ANY video.** These are the owner's standing rules. They apply to every video, the 1st and the 50th alike. Quality must never drop over time.
 
 Renders the vertical (1080x1920) explainer videos for @sql_developer_no1 / @UmidZeynalDeveloper.
@@ -16,7 +18,7 @@ Rendered videos are pushed to the public repo `sql-developer-videos`; Metricool 
 1 binary · 2 UTF-8 bytes · 3 NULL · 4 COUNT · 5 index · 6 explain plan · 7 joins · 8 deadlock · 9 bind variables · 10 UNDO · 11 flashback · 12 partitioning · 13 parallel query · 14 materialized views · 15 optimizer statistics · 16 bind peeking · 17 SQL plan baselines · 18 redo & COMMIT (incl. UNDO vs REDO) · 19 result cache · 20 fragmentation & SHRINK
 
 ## Next topics
-21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · 33 analytic functions ✓ · 34 MERGE ✓ · 35 exception handling ✓ · 36 package state & ORA-04068 ✓ · 37 dynamic SQL & injection ✓ · 38 DBMS_SCHEDULER ✓ · 39 sequences & identity ✓ · 40 pagination ✓ · 41 mutating table ✓ · 42 collections ✓ · 43 temporary tables ✓ · 44 pipelined functions ✓ · long 1: query tuning guide (16:9, youtu.be/4wCKJUGmJkI) ✓ · 45 isolation levels ✓ · 46 FOR UPDATE SKIP LOCKED ✓ · 47 DATE traps ✓ · 48 hierarchical queries ✓ · 49 constraints ✓ · 50 PIVOT ✓ · long 2: row-by-row → set-based (youtu.be/PsdrJkilqTY) ✓ · next: topics 51+ and long video 3
+21 AWR in 3 minutes ✓ · 22 UNDO vs REDO deep-dive ✓ · 23 Datafiles vs log files ✓ · 24 latches & mutexes ✓ · 25 locks & enqueues ✓ · 26 shared pool & hard parse ✓ · 27 buffer cache ✓ · 28 indexes deep-dive ✓ · 29 reading execution plans ✓ · 30 SQL hints ✓ · 31 BULK COLLECT & FORALL ✓ · 32 PGA, sorts & TEMP ✓ · 33 analytic functions ✓ · 34 MERGE ✓ · 35 exception handling ✓ · 36 package state & ORA-04068 ✓ · 37 dynamic SQL & injection ✓ · 38 DBMS_SCHEDULER ✓ · 39 sequences & identity ✓ · 40 pagination ✓ · 41 mutating table ✓ · 42 collections ✓ · 43 temporary tables ✓ · 44 pipelined functions ✓ · long 1: query tuning guide (16:9, youtu.be/4wCKJUGmJkI) ✓ · 45 isolation levels ✓ · 46 FOR UPDATE SKIP LOCKED ✓ · 47 DATE traps ✓ · 48 hierarchical queries ✓ · 49 constraints ✓ · 50 PIVOT ✓ · long 2: row-by-row → set-based (youtu.be/PsdrJkilqTY) ✓ · 51 SELECT order ✓ · 52 GROUP BY ✓ · 53 JOIN ✓ · 54 subqueries ✓ · 55 COMMIT/ROLLBACK ✓ · 56 indexes ✓ · long 3: how a SELECT runs (youtu.be/y4A-vURIPH4) ✓ · next: 57 execution plans from zero
 
 Owner's backlog requests: (21–23 covered both)
 
