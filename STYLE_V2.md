@@ -48,7 +48,7 @@ python3 v2/videoNN.py check     # Whisper check of the voice
 python3 v2/videoNN.py full      # render → /home/claude/en/sql_videoNN_EN_<slug>.mp4
 ```
 Then: cover (`make_cover.py`), captions JSON (`sql-developer-videos/meta/capXXYY.json`), push to `sql-developer-videos`,
-YouTube upload (cover, Education, not for kids, AI = yes, notify off, public, playlist), Instagram via Metricool (Reel + cover, isAiGenerated false).
+YouTube upload (cover, Education, not for kids, AI = yes, notify off, public, playlist), Instagram: directly on instagram.com in the owner's Chrome (no Metricool limit) — `sql-developer-videos/tools/pump.html` (opened via htmlpreview.github.io as a popup) streams the mp4/cover from GitHub into the composer, caption pasted with a synthetic paste event, crop Original, AI label off, Facebook share off ("Don't share this reel"), then Instagram's own **Schedule content**. Metricool only as a fallback (free plan = 20 posts/month).
 
 ## 7. Never
 - Real work data of any kind (see README rule 0) — only generic names: `orders`, `customers`, `payments`, `accounts`, `APP`, `batch_pkg`, IPs from 192.0.2.x.
