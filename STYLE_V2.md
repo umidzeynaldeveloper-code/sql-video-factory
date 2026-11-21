@@ -1,5 +1,7 @@
 # Video standard v2 (approved by the owner, 2026-11-15) ⭐
 
+> Subordinate to [SQL_VIDEO_PRODUCTION_MASTER.md](SQL_VIDEO_PRODUCTION_MASTER.md). Still valid as the base layer; from video 57 the engine is v2.1 (`v21/engine.py`), publishing is direct (not Metricool) and needs no approval.
+
 Video 51 is the reference ("51-ci video əladır, belə davam edə bilərik").
 **Every new video — short or long — is made with the v2 engine (`v2/studio.py`) and follows every rule below.**
 The old engine (`make_videoN.py` + `en/build.py`) is kept only for re-renders of videos 1–50.

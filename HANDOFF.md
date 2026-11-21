@@ -1,8 +1,8 @@
 # HANDOFF — read this first in every new chat
 
-Starter prompt for the owner: **"sql-video-factory reposundakı HANDOFF.md-ni oxu və videolara davam et."**
+Starter prompt for the owner: **"sql-video-factory reposundakı SQL_VIDEO_PRODUCTION_MASTER.md və HANDOFF.md-ni oxu, sonra növbəti videoya avtonom davam et."**
 
-Then Claude: read this file + `STYLE_V2.md` (+ the "Quality rules" in `README.md`), run setup, continue from "Next".
+Then Claude: read **`SQL_VIDEO_PRODUCTION_MASTER.md` (rules, wins every conflict)** → this file (status + recipes) → `CONTENT_REGISTRY.md`; write `~/.sqlvf_blocklist` from memory; run `bash setup_v2.sh`; continue from "Next" without asking for approval.
 Talk to the owner **in Azerbaijani**. Work nonstop; ask only when something can't be undone.
 
 ---
@@ -18,7 +18,7 @@ Nothing from the owner's real job may appear in frames, narration, captions, tit
 - Use only generic names: schema `APP`, `batch_pkg`, `orders`, `customers`, `payments`, `accounts`; IPs only `192.0.2.x`. Generic "end of day" / `batch_pkg.run_day` is OK.
 - Before every render and every publish: grep scripts + captions against the private list (must return nothing) and look at the preview sheets.
 
-## 3. Status (2026-11-21)
+## 3. Status (2026-11-21, after v3.0 directive)
 | | YouTube | Instagram |
 |---|---|---|
 | 1–47 | published | published / Metricool (44–47 at 20:00 on Nov 16–19) |
@@ -29,6 +29,7 @@ Nothing from the owner's real job may appear in frames, narration, captions, tit
 - Pinned comments on YouTube: blocked until the channel's phone verification is done.
 
 ## 4. Next
+Engine for new videos: **v2.1** (`v21/engine.py`, PRODUCTION preset), scripts as `v21/videoNN.py` (copy the structure of `v21/demo_new.py`), QA with `v21/qa.py`. Topic list + production log: `CONTENT_REGISTRY.md`.
 1. **57 — execution plans from zero** (v2, beginner-first: analogy → plan as a tree, read bottom-up/inside-out, rows/cost, FULL vs INDEX RANGE SCAN, classic mistake).
 2. **long4** (16:9, 10–12 chapters).
 3. Then continue beginner-first topics (ideas: NULL logic, CASE, window functions, LIKE & wildcards, INSERT/UPDATE/DELETE basics, views, sequences basics, PL/SQL block basics, cursors, exceptions basics).
@@ -42,7 +43,8 @@ cd sql-video-factory && bash setup_v2.sh
 ```
 Gives: `/home/claude/v2/*` (engine + scripts), Kokoro multi-lang v1.0 + Whisper base.en in `/home/claude/tts2`, `make_cover.py`, and the public repo `/home/claude/sql-developer-videos`.
 
-## 6. Make a video (v2)
+## 6. Make a video
+> v2.1 (default from 57): same SCENES format + optional 5th item (sound events); run `python3 v21/videoNN.py preview preview` → `check` → `full final`, then `python3 v21/qa.py <mp4> --script … --meta …`. The v2 steps below remain valid for the v2 fallback.
 1. Copy the nearest script (e.g. `v2/video56.py`) to `v2/video57.py`. Format:
    `SCENES = [(title, colour, draw_fn, [beats…]), …]` → `run(SCENES, Stage(1080,1920,30), "/home/claude/v2/out57", "/home/claude/en/sql_video57_EN_<slug>.mp4", mode, seed=57, max_dur=175)`.
    Long: `Stage(1920,1080,30)`, no max_dur limit, output `/home/claude/v2/long4_<slug>.mp4`.

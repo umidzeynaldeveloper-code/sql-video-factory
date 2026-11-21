@@ -1,8 +1,9 @@
 # SQL video factory
 
-> 🧭 **New chat? Start with [HANDOFF.md](HANDOFF.md)** — status, setup, publish flows, next topics.
+> 📘 **Rules: [SQL_VIDEO_PRODUCTION_MASTER.md](SQL_VIDEO_PRODUCTION_MASTER.md) is the single source of truth** (wins every conflict with this README).
+> 🧭 Status & recipes: [HANDOFF.md](HANDOFF.md) · Topics made/planned: [CONTENT_REGISTRY.md](CONTENT_REGISTRY.md)
 
-> ⭐ **From video 51 on, every video follows [STYLE_V2.md](STYLE_V2.md)** (Full HD, beat-synced narration, spotlight lighting, beginner-first analogies). Engine: `v2/studio.py`.
+> ⭐ From video 57 on: engine **v2.1** (`v21/engine.py`) on top of the v2 standard ([STYLE_V2.md](STYLE_V2.md)).
 
 > ⚠️ **Read the "Quality rules" section before making ANY video.** These are the owner's standing rules. They apply to every video, the 1st and the 50th alike. Quality must never drop over time.
 
@@ -76,10 +77,10 @@ Follow @sql_developer_no1 for more Oracle internals explained visually 🚀
 ### 4. Publishing (YouTube via Metricool)
 - YouTube title = short caption line (≤100 chars, ends with `#sql #oracle #shorts`). **No number in the title.**
 - Description starts with `<N>. `
-- `privacy=private` (the owner reviews and publishes himself), `type=short`, `madeForKids=false`, `category=EDUCATION`
+- ~~`privacy=private`~~ → **public** since video 39 (MASTER, conflicts resolved), `type=short`, `madeForKids=false`, `category=EDUCATION`
 - **`isAiGeneratedContent=true` on EVERY upload** (YouTube AI disclosure, protects the channel). If any uploaded video is missing it, tell the owner.
 - `notifySubscribers=false`
-- Post in numerical order. Ask the owner to approve topics before each new batch.
+- Post in numerical order. ~~Ask the owner to approve topics~~ → superseded: autonomous production (MASTER §2).
 - English voiceover and text only.
 
 ### 4b. Instagram (connected to Metricool since 2026-10-29)
