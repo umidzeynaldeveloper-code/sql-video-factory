@@ -29,12 +29,17 @@ Nothing from the owner's real job may appear in frames, narration, captions, tit
 - Pinned comments on YouTube: blocked until the channel's phone verification is done.
 
 ## 4. Next
+**Open item:** Instagram Reel for **57** is not posted yet (instagram.com was blocked on the network of the 2026-11-21 session — the owner's work PC). Post it from the owner's home Chrome with §8 (`sql_video57_EN_execution_plans.mp4`, `covers/cover57.jpg`, caption `meta/cap5762.json` → `ig`), slot Nov 22 20:00 or the next free one.
+
 Engine for new videos: **v2.1** (`v21/engine.py`, PRODUCTION preset), scripts as `v21/videoNN.py` (copy the structure of `v21/demo_new.py`), QA with `v21/qa.py`. Topic list + production log: `CONTENT_REGISTRY.md`.
-1. **57 — execution plans from zero** (v2, beginner-first: analogy → plan as a tree, read bottom-up/inside-out, rows/cost, FULL vs INDEX RANGE SCAN, classic mistake).
-2. **long4** (16:9, 10–12 chapters).
-3. Then continue beginner-first topics (ideas: NULL logic, CASE, window functions, LIKE & wildcards, INSERT/UPDATE/DELETE basics, views, sequences basics, PL/SQL block basics, cursors, exceptions basics).
+1. ~~57 — execution plans from zero~~ done 2026-11-21 (v2.1.1, YouTube public).
+2. **58 — NULL logic / three-valued logic** (announced at the end of 57).
+3. **long4** (16:9, 10–12 chapters).
+4. Then continue beginner-first topics (ideas: NULL logic, CASE, window functions, LIKE & wildcards, INSERT/UPDATE/DELETE basics, views, sequences basics, PL/SQL block basics, cursors, exceptions basics).
 After each video: publish to **both** YouTube and Instagram the same day, so Instagram never falls behind.
 After every 5–6 videos: update this file (status + next), commit, and tell the owner to start a new chat.
+
+Engine note v2.1.1: `voice21.KokoroProvider` now writes `/home/claude/tts2/lexicon-extra-en.txt` (derived inflections) — check the render log for `[voice] OOV` and reword or add to `MANUAL` if any word stays unknown.
 
 ## 5. Setup in a fresh workspace
 ```

@@ -60,6 +60,7 @@ COVERS = {
     54: ("SUB-\nQUERIES", "A question inside a question", YEL),
     55: ("COMMIT\nROLLBACK", "Pencil, pen & eraser", PINK),
     56: ("INDEXES", "Why some queries are instant", GREEN),
+    57: ("EXECUTION\nPLANS", "Read Oracle's route, from zero", YEL),
 }
 
 def cover(n, out):

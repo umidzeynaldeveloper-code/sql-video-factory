@@ -62,6 +62,7 @@ Engine: v1 = `make_videoN.py` + `en/build.py` · v2 = `v2/studio.py` · v2.1 = `
 | 54 | subqueries & NOT IN NULL trap | short 9:16 | v2 | published | scheduled (IG native, Nov 16-22) |
 | 55 | COMMIT / ROLLBACK | short 9:16 | v2 | published | scheduled (IG native, Nov 16-22) |
 | 56 | indexes from zero | short 9:16 | v2 | published | scheduled (IG native, Nov 16-22) |
+| 57 | execution plans from zero (beginner angle; 6 & 29 were advanced) | short 9:16 | v2.1 | published (youtube.com/shorts/8ASy_q1y8k4) | **pending** — instagram.com blocked on the network used 2026-11-21 |
 | long1 | Oracle query tuning guide | long 16:9 | v1 | published (youtu.be/4wCKJUGmJkI) | — |
 | long2 | row-by-row → set-based PL/SQL (52× faster) | long 16:9 | v1 | published (youtu.be/PsdrJkilqTY) | — |
 | long3 | how a SELECT runs (parse → optimize → execute → fetch) | long 16:9 | v2 | published (youtu.be/y4A-vURIPH4) | — |
@@ -69,9 +70,8 @@ Engine: v1 = `make_videoN.py` + `en/build.py` · v2 = `v2/studio.py` · v2.1 = `
 ## Planned / ideas (not yet made)
 | # | Topic | Angle |
 |---|---|---|
-| 57 | execution plans from zero | beginner: plan = tree, read inside-out, rows/cost, FULL vs INDEX RANGE SCAN |
 | long4 | (choose) | 10–12 chapters, own 16:9 layout |
-| — | NULL logic in WHERE / three-valued logic | beginner |
+| 58 | NULL logic in WHERE / three-valued logic | beginner (announced at the end of 57) |
 | — | CASE expressions | beginner |
 | — | window functions from zero (ROW_NUMBER, RANK) | beginner angle (33 was advanced) |
 | — | LIKE, wildcards and why leading % kills an index | beginner + performance |
@@ -83,3 +83,4 @@ Engine: v1 = `make_videoN.py` + `en/build.py` · v2 = `v2/studio.py` · v2.1 = `
 | # | Date | Engine | Res/FPS | Duration | Render time | Peak RAM | TTS | QA | Files | Issues → fixes |
 |---|---|---|---|---|---|---|---|---|---|---|
 | demo | 2026-11-21 | v2.1 final | 1080×1920/30 | 17.1 s | 115 s (cold TTS) | 1148 MB | Kokoro sid16 0.9 | passed (A/B) | v21out/demo_new_final.mp4 | glow washed out highlighted row → halo glow; camera zoom hid title → zoom ≤1.08 |
+| 57 | 2026-11-21 | v2.1.1 final | 1080×1920/30 | 173.9 s | 907 s video + 21 s audio (5216 frames, 0.35 s/frame/proc) | 1369 MB | Kokoro sid16 0.9 + OOV patch | all gates passed (−14.03 LUFS, −1.24 dBTP) | sql_video57_EN_execution_plans.mp4, covers/cover57.jpg, meta/cap5762.json | Kokoro silently SKIPPED words missing from lexicon-us-en (wants, columns, expects, optimizer, Oracle's…) → engine fix v2.1.1 `voice21.patch_lexicon` derives inflected forms; callout lines crossed table rows → pills under columns; camera pan pushed code under title → removed |
