@@ -1,5 +1,7 @@
 # SQL video factory
 
+> 🧭 **New chat? Start with [HANDOFF.md](HANDOFF.md)** — status, setup, publish flows, next topics.
+
 > ⭐ **From video 51 on, every video follows [STYLE_V2.md](STYLE_V2.md)** (Full HD, beat-synced narration, spotlight lighting, beginner-first analogies). Engine: `v2/studio.py`.
 
 > ⚠️ **Read the "Quality rules" section before making ANY video.** These are the owner's standing rules. They apply to every video, the 1st and the 50th alike. Quality must never drop over time.
