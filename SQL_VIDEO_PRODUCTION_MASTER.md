@@ -79,6 +79,7 @@ Long 16:9: content y 200–880, subtitles at the bottom, chapter counter "k / n"
 - Provider config: default `kokoro`; optional `google` (adapter in `voice21.py`); fallback kokoro. Google may be enabled only after a real connection + authentication + audible test succeed (today: no SDK, no credentials, host blocked by the workspace proxy).
 - TTS cache key = provider + model + voice + speed + text (md5) — never reuse audio across providers.
 - Word timing: Kokoro and local Whisper give **no** timestamps; subtitles use the estimate in `word_times()` (pause detection + syllables). Say so honestly; check sync by watching the preview.
+- Lexicon gaps (v2.1.1): sherpa-onnx Kokoro silently **skips** words missing from `lexicon-us-en.txt` (many plurals / -s / -er / possessives). `voice21.patch_lexicon` derives them into `~/tts2/lexicon-extra-en.txt`; any `[voice] OOV` line in the render log = reword or add to `MANUAL`.
 - Resampling: polyphase (`audio.resample`, 24 kHz → 48 kHz).
 - Sound design (`v21/audio.py`): whoosh, impact, sub_hit, riser, click, data, sweep (transition), atmos, success, error; scan = clicks/data during a scan. Attach effects to **visual events** via the SCENES 5th item `[(beat, delay, name, {params})]`, not to every sentence. Intensity follows meaning (success/impact for the payoff, error for the mistake). Voice always clearly on top.
 - Mastering: 48 kHz stereo, voice EQ + compression + limiter, ducked music + atmos bed, two-pass loudnorm **−14 LUFS / −1.5 dBTP** (starting preset; check every video).
