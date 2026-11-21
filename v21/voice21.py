@@ -20,7 +20,8 @@ PRON = {
     "TO_CHAR": "to char", "TO_DATE": "to date", "TRUNC": "trunc", "B-tree": "B tree", "I/O": "I O", "IO": "I O",
     "UNDO": "undo", "REDO": "redo", "TEMP": "temp", "LRU": "L R U", "OLTP": "O L T P", "ETL": "E T L",
     "ACID": "acid", "API": "A P I", "UUID": "U U I D", "NULL": "null", "NULLs": "nulls", "ASC": "ascending", "DESC": "descending",
-    "PK": "primary key", "FK": "foreign key", "CBO": "C B O", "SQL*Plus": "S Q L plus", "&": "and", "%": "percent",
+    "PK": "primary key", "FK": "foreign key", "CBO": "C B O", "SQL*Plus": "S Q L plus", "DBMS_XPLAN": "D B M S X plan", "DBMS_XPLAN.DISPLAY": "D B M S X plan dot display",
+    "DISPLAY_CURSOR": "display cursor", "PLAN_TABLE": "plan table", "&": "and", "%": "percent",
 }
 
 
@@ -49,18 +50,112 @@ def spoken_tokens(display_tokens):
 class ProviderUnavailable(RuntimeError): pass
 
 
+# ------------------------------------------------------------------ OOV patch lexicon (v2.1.1)
+# sherpa-onnx Kokoro with a lexicon SKIPS every word that is not in lexicon-us-en.txt ("OOV word skipped"),
+# and that lexicon lacks many inflected forms (wants, columns, expects, optimizer, Oracle's, here's ...).
+# Fix: derive the missing form from its base word and write it to an extra lexicon that is loaded AFTER the
+# original one (original entries always win). Words that cannot be derived are reported so the script is reworded.
+K10 = "/home/claude/tts2/kokoro-multi-lang-v1_0"
+EXTRA_LEX = "/home/claude/tts2/lexicon-extra-en.txt"
+_BASE = None; _EXTRA = {}; _TTS = {"obj": None, "n": -1}
+VOICELESS = set("ptkfθ"); SIBIL = set("szʃʒʧʤ")
+MANUAL = {"gps": "ʤ ˌ i p ˌ i ˈ ɛ s"}
+
+
+def _base():
+    global _BASE
+    if _BASE is None:
+        _BASE = {}
+        for ln in open(f"{K10}/lexicon-us-en.txt", encoding="utf-8"):
+            w, _, ph = ln.rstrip("\n").partition(" ")
+            if w and ph and w not in _BASE: _BASE[w] = ph
+        if os.path.exists(EXTRA_LEX):
+            for ln in open(EXTRA_LEX, encoding="utf-8"):
+                w, _, ph = ln.rstrip("\n").partition(" ")
+                if w and ph: _EXTRA.setdefault(w, ph)
+    return _BASE
+
+
+def _s(ph):  # plural / 3rd person / possessive ending
+    last = ph.split()[-1]
+    return ph + (" ᵻ z" if last in SIBIL else " s" if last in VOICELESS else " z")
+
+
+def derive(w, depth=0):
+    B = _base(); w = w.lower()
+    if w in B: return B[w]
+    if w in _EXTRA: return _EXTRA[w]
+    if w in MANUAL: return MANUAL[w]
+    look = lambda x: B.get(x) or _EXTRA.get(x) or MANUAL.get(x) or (derive(x, depth + 1) if depth < 1 and len(x) > 2 else None)
+    if w.endswith("'s") and look(w[:-2]): return _s(look(w[:-2]))
+    if w.endswith("s'") and look(w[:-2]): return _s(look(w[:-2]))
+    if w.endswith("ies") and look(w[:-3] + "y"): return look(w[:-3] + "y")[:-1].rstrip() + " i z"
+    if w.endswith("es") and look(w[:-2]) and w[-3] in "sxzh": return look(w[:-2]) + " ᵻ z"
+    if w.endswith("s") and look(w[:-1]): return _s(look(w[:-1]))
+    if w.endswith("ed"):
+        b = look(w[:-2]) or look(w[:-1])
+        if b: last = b.split()[-1]; return b + (" ᵻ d" if last in "td" else " t" if last in VOICELESS else " d")
+    if w.endswith("er"):
+        b = look(w[:-1]) or look(w[:-2])
+        if b: return b + " ə ɹ"
+    if w.endswith("ers"):
+        b = look(w[:-2]) or look(w[:-3])
+        if b: return b + " ə ɹ z"
+    if w.endswith("ing"):
+        b = look(w[:-3]) or look(w[:-3] + "e")
+        if b: return b + " ɪ ŋ"
+    return None
+
+
+def patch_lexicon(text, log=print):
+    """add derivable OOV words of `text` to the extra lexicon; returns list of words that stay unknown"""
+    B = _base(); new = {}; unknown = []
+    for raw in re.findall(r"[A-Za-z][A-Za-z']*", text):
+        w = raw.strip("'").lower()
+        if not w or w in B or w in _EXTRA or w in new: continue
+        ph = derive(w)
+        if ph: new[w] = ph
+        else: unknown.append(raw)
+    if new:
+        _EXTRA.update(new)
+        with open(EXTRA_LEX, "w", encoding="utf-8") as f:
+            for w, ph in sorted(_EXTRA.items()): f.write(f"{w} {ph}\n")
+    if unknown: log(f"[voice] OOV (will be SKIPPED by Kokoro, reword or add to MANUAL): {sorted(set(unknown))}")
+    return unknown
+
+
+def _tts21():
+    import sherpa_onnx
+    if _TTS["obj"] is None or _TTS["n"] != len(_EXTRA):
+        lex = f"{K10}/lexicon-us-en.txt,{EXTRA_LEX},{K10}/lexicon-zh.txt" if _EXTRA else f"{K10}/lexicon-us-en.txt,{K10}/lexicon-zh.txt"
+        kc = sherpa_onnx.OfflineTtsKokoroModelConfig(model=f"{K10}/model.onnx", voices=f"{K10}/voices.bin", tokens=f"{K10}/tokens.txt",
+                                                     data_dir=f"{K10}/espeak-ng-data", dict_dir=f"{K10}/dict", lexicon=lex)
+        _TTS["obj"] = sherpa_onnx.OfflineTts(sherpa_onnx.OfflineTtsConfig(model=sherpa_onnx.OfflineTtsModelConfig(kokoro=kc, num_threads=2)))
+        _TTS["n"] = len(_EXTRA)
+    return _TTS["obj"]
+
+
 class KokoroProvider:
     name = "kokoro"
 
-    def __init__(self, sid=16, speed=0.9, model="k10"): self.sid, self.speed, self.model = sid, speed, model
+    def __init__(self, sid=16, speed=0.9, model="k10", oov_patch=True):
+        self.sid, self.speed, self.model, self.oov = sid, speed, model, oov_patch and model == "k10"
 
-    def key(self): return dict(p="kokoro", sid=self.sid, speed=self.speed, model=self.model)
+    def key(self):
+        k = dict(p="kokoro", sid=self.sid, speed=self.speed, model=self.model)
+        if self.oov: k["lex"] = "oov1"            # different audio than v2.1.0 -> separate cache entries
+        return k
 
     def synth(self, text, wav):
-        from voice import say          # v2/voice.py, unchanged
         import soundfile as sf
-        dur = say(text, wav, sid=self.sid, speed=self.speed, model=self.model)
-        return dur, sf.info(wav).samplerate
+        if not self.oov:
+            from voice import say          # v2/voice.py, unchanged
+            dur = say(text, wav, sid=self.sid, speed=self.speed, model=self.model)
+            return dur, sf.info(wav).samplerate
+        patch_lexicon(text)
+        a = _tts21().generate(text, sid=self.sid, speed=self.speed)
+        x = np.array(a.samples, dtype=np.float32); sf.write(wav, x, a.sample_rate)
+        return len(x) / a.sample_rate, a.sample_rate
 
 
 class GoogleTTSProvider:
